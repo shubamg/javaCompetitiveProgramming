@@ -36,6 +36,7 @@ public class InputReader {
         return Integer.parseInt(next());
     }
 
+    // Assumes chars are not concatenated
     public char nextChar() {
         final String str = next();
         Preconditions.checkState(str.length() == 1);
