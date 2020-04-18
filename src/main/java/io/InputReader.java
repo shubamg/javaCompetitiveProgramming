@@ -39,7 +39,7 @@ public class InputReader {
     // Assumes chars are not concatenated
     public char nextChar() {
         final String str = next();
-        Preconditions.checkState(str.length() == 1);
+        assert str.length() == 1;
         return str.charAt(0);
     }
 
