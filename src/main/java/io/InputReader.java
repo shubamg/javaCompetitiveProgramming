@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 
 
 public class InputReader {
-    private BufferedReader br;
+    private final BufferedReader br;
     private StringTokenizer st;
 
     public InputReader(final BufferedReader br) {
