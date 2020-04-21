@@ -3,7 +3,6 @@ package math;
 public class MathUtils {
     /**
      * Assumes x <= y
-     *
      * @param smaller - >= 0
      * @param larger  - >= x
      * @return
