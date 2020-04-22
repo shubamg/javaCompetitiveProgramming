@@ -59,10 +59,6 @@ public class ModuloCalculator {
         return partialResult;
     }
 
-    public long decimalToLong(final long preDecimal, final long postDecimal, final int powerOfTen) {
-        return normalize(preDecimal + normalize(postDecimal * getInverse(power(10, powerOfTen))));
-    }
-
     /**
      * @return a value b/w 0 <= ret < b
      */

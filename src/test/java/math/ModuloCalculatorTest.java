@@ -2,34 +2,9 @@ package math;
 
 import org.junit.Assert;
 import org.junit.Test;
+import util.Decimal;
 
 public class ModuloCalculatorTest {
-
-    @Test
-    public void testBezoutCases() {
-        testBezout(3, 24);
-        testBezout(0, 24);
-        testBezout(51, 72);
-        testBezout(91, 191);
-        testBezout(63245986, 102334155);
-    }
-
-    private void testBezout(final long smaller, final long larger) {
-        final String OUT_TMPL = "(%d)*(%d) + (%d)*(%d) = %d in %d calls";
-        final BezoutRepr bezoutRepr = MathUtils.getBezoutRepr(smaller, larger);
-        System.out.println(String.format(OUT_TMPL,
-                                         bezoutRepr.getCoeffSmall(),
-                                         smaller,
-                                         bezoutRepr.getCoeffLarge(),
-                                         larger,
-                                         bezoutRepr.getGcd(),
-                                         bezoutRepr.getNumCalls()));
-        final long gcd = bezoutRepr.getGcd();
-        Assert.assertEquals(gcd, bezoutRepr.getCoeffSmall() * smaller + bezoutRepr.getCoeffLarge() * larger);
-        Assert.assertEquals(0, smaller % gcd);
-        Assert.assertEquals(0, larger % gcd);
-        Assert.assertTrue(gcd > 0);
-    }
 
     @Test
     public void testGetInverse() {
@@ -140,9 +115,8 @@ public class ModuloCalculatorTest {
 
     @Test
     public void testDecimalToLong() {
-        final String input = "12345.678";
         final ModuloCalculator calculator = new ModuloCalculator(17);
-        Assert.assertEquals(15, MathUtils.decimalToLong(input, calculator));
+        Assert.assertEquals(16, new Decimal(12345, 678, 6, true).getLong(calculator));
     }
 
     private void testGetQuotient(final long actualQuotient, final long y, final long base) {

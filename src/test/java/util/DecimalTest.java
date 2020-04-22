@@ -1,5 +1,6 @@
 package util;
 
+import math.ModuloCalculator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,4 +54,60 @@ public class DecimalTest {
         final Decimal d2 = new Decimal(0, 9, 1, true);
         Assert.assertEquals(new Decimal(0, 104, 3, true), d1.subtract(d2));
     }
+
+    @Test
+    public void testDecimalToLong() {
+        final ModuloCalculator moduloCalculator = new ModuloCalculator(17);
+        final Decimal d = new Decimal(105, 678, 4, false);
+        Assert.assertEquals(6, d.getLong(moduloCalculator));
+    }
+
+    @Test
+    public void testComparisonOnSign() {
+        // compare on Sign
+        testInequality(1, 1, 3, 10, 10, 2, false);
+
+        // compare on int part
+        testInequality(10, 1, 3, 1, 10, 2, true);
+
+        // compare on fraction part of different frac len
+        testInequality(10, 1, 2, 10, 99, 4, true);
+
+        // compare on fraction part of equal frac len
+        testInequality(10, 99, 2, 10, 1, 2, true);
+    }
+
+    @Test
+    public void testEquality() {
+        final Decimal d1 = new Decimal(10, 99, 2, true);
+        final Decimal d2 = new Decimal(10, 99, 2, true);
+        Assert.assertEquals(0, d1.compareTo(d2));
+        Assert.assertEquals(d1, d2);
+    }
+
+    @Test
+    public void testEqualityOfZeroes() {
+        final Decimal d1 = new Decimal(0, 0, 2, true);
+        final Decimal d2 = new Decimal(0, 0, 3, false);
+        Assert.assertEquals(0, d1.compareTo(d2));
+        Assert.assertEquals(d1, d2);
+    }
+
+
+    private void testInequality(final int int1,
+                                final int frac1,
+                                final int fracLen1,
+                                final int int2,
+                                final int frac2,
+                                final int fracLen2,
+                                final boolean sign2) {
+        final Decimal d1 = new Decimal(int1, frac1, fracLen1, true);
+        final Decimal d2 = new Decimal(int2, frac2, fracLen2, sign2);
+        Assert.assertTrue(d1.compareTo(d2) > 0);
+        Assert.assertTrue(d2.compareTo(d1) < 0);
+        Assert.assertTrue(d1.invert().compareTo(d2.invert()) < 0);
+        Assert.assertTrue(d2.invert().compareTo(d1.invert()) > 0);
+        Assert.assertNotEquals(d1, d2);
+    }
+
 }
