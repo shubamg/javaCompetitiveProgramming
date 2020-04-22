@@ -45,7 +45,7 @@ public class ForeGone {
         final StringBuilder result = new StringBuilder();
         final int T = reader.nextInt();
         for (int t = 1; t <= T; t++) {
-            final String nString = reader.nextLine();
+            final String nString = reader.next();
             final ForeGone foreGone = new ForeGone(nString);
             final String[] unformattedResult = foreGone.getRes();
             result.append(formatOutput(t, unformattedResult));

@@ -111,7 +111,7 @@ public class YouCanGoYourOwnWay {
         final int T = reader.nextInt();
         for (int t = 1; t <= T; t++) {
             final int N = reader.nextInt();
-            final String lydiaMoves = reader.nextLine();
+            final String lydiaMoves = reader.next();
             final YouCanGoYourOwnWay youCanGoYourOwnWay = new YouCanGoYourOwnWay(lydiaMoves, N);
             final StringBuilder output = new StringBuilder();
             youCanGoYourOwnWay.getSolution().stream().map(Direction::toChar).forEach(output::append);

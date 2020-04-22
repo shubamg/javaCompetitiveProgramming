@@ -28,9 +28,7 @@ public class ModuloCalculator {
         return getEquivalenceClass(getEquivalenceClass(x) * getEquivalenceClass(y));
     }
 
-    public long getQuotient(final long x, final long y) {
-        assert  y != 0;
-        assert x % y == 0;
+    public long expressFraction(final long x, final long y) {
         return multiply(x, getInverse(y));
     }
 

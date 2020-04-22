@@ -76,7 +76,7 @@ public class YouCanGoYourOwnWay2 {
         final int T = reader.nextInt();
         for (int t = 1; t <= T; t++) {
             final int N = reader.nextInt();
-            final String lydiaMoves = reader.nextLine();
+            final String lydiaMoves = reader.next();
             final YouCanGoYourOwnWay2 youCanGoYourOwnWay = new YouCanGoYourOwnWay2(lydiaMoves, N);
             System.out.print(String.format("Case #%d: ", t));
             final char[] solution = youCanGoYourOwnWay.getSolution();

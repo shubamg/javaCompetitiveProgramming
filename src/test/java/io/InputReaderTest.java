@@ -19,6 +19,7 @@ public class InputReaderTest {
                .thenReturn("1.2\t1.3")
                .thenReturn("123456789012345")
                .thenReturn("abc def")
+               .thenReturn("123456.789")
                .thenReturn(null);
     }
 
@@ -49,10 +50,14 @@ public class InputReaderTest {
             Assert.assertEquals(123456789012345L, l1);
         }
         {
-            final String s1 = inputReader.nextLine();
+            final String s1 = inputReader.next();
             Assert.assertEquals("abc", s1);
-            final String s2 = inputReader.nextLine();
+            final String s2 = inputReader.next();
             Assert.assertEquals("def", s2);
+        }
+        {
+            final long[] fraction = inputReader.nextFraction();
+            Assert.assertArrayEquals(new long[]{123456, 789}, fraction);
         }
     }
 }

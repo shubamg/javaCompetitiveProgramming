@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 
 /**
  * Assumes polynomial as an array of coefficients
- * Left most is the coefficient of the highest degree term
+ * Index 0 is the coefficient of the highest degree term
  */
 public class PolynomialCalculator {
     private final LongUnaryOperator modularOp;
@@ -17,13 +17,13 @@ public class PolynomialCalculator {
 
     public PolynomialCalculator(final long base) {
         final ModuloCalculator moduloCalculator = new ModuloCalculator(base);
-        modularOp = moduloCalculator::getEquivalenceClass;
-        polyCleanOp = UnaryOperator.identity();
+        this.modularOp = moduloCalculator::getEquivalenceClass;
+        this.polyCleanOp = UnaryOperator.identity();
     }
 
     public PolynomialCalculator() {
         this.modularOp = LongUnaryOperator.identity();
-        polyCleanOp = this::cleanLeadingZeroes;
+        this.polyCleanOp = PolynomialCalculator::cleanLeadingZeroes;
     }
 
     public long[] add(final long[] _p1, final long[] _p2) {
@@ -127,11 +127,11 @@ public class PolynomialCalculator {
         return polyCleanOp.apply(result);
     }
 
-    private long[] cleanLeadingZeroes(final long[] input) {
-        int leadingZeroes = 0;
+    private static long[] cleanLeadingZeroes(final long[] input) {
+        int countOfLeadingZeroes = 0;
         for (int i = 0; i < input.length && input[i] == 0; i++) {
-            ++leadingZeroes;
+            ++countOfLeadingZeroes;
         }
-        return leadingZeroes > 0 ? Arrays.copyOfRange(input, leadingZeroes, input.length) : input;
+        return countOfLeadingZeroes > 0 ? Arrays.copyOfRange(input, countOfLeadingZeroes, input.length) : input;
     }
 }

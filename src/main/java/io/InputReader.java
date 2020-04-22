@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -17,7 +18,7 @@ public class InputReader {
 
     }
 
-    private String next() {
+    public String next() {
         while (st == null || !st.hasMoreElements()) {
             try {
                 final String line = br.readLine();
@@ -51,7 +52,13 @@ public class InputReader {
         return Double.parseDouble(next());
     }
 
-    public String nextLine() {
-        return next();
+    /**
+     * Converts a decimal number into a fraction
+     *
+     * @return - long array of size 2 {Nr, Dr}
+     */
+    public long[] nextFraction() {
+        final String fractionString = next();
+        return Arrays.stream(fractionString.split("\\.")).mapToLong(Long::valueOf).toArray();
     }
 }

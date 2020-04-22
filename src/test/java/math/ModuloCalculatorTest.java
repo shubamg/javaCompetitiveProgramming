@@ -50,11 +50,11 @@ public class ModuloCalculatorTest {
      * Inverse doesn't exist as x is multiple of base
      */
     @Test(expected = AssertionError.class)
-    public void testGetInverse2() {
+    public void testNoInverse() {
         final long base = 40;
         final ModuloCalculator calculator = new ModuloCalculator(base);
         final long x = 42;
-        final long xInverse = calculator.getInverse(x);
+        calculator.getInverse(x);
     }
 
     @Test
@@ -115,17 +115,17 @@ public class ModuloCalculatorTest {
         final ModuloCalculator calculator = new ModuloCalculator(17);
         int exceptionCount = 0;
         try {
-            calculator.getQuotient(13, 0);
+            calculator.expressFraction(13, 0);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
         try {
-            calculator.getQuotient(0, 17);
+            calculator.expressFraction(0, 17);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
         try {
-            calculator.getQuotient(-1, 17);
+            calculator.expressFraction(-1, 17);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
@@ -134,6 +134,6 @@ public class ModuloCalculatorTest {
 
     private void testGetQuotient(final long actualQuotient, final long y, final long base) {
         final ModuloCalculator calculator = new ModuloCalculator(base);
-        Assert.assertEquals(0, (actualQuotient - calculator.getQuotient(actualQuotient * y, y)) % base);
+        Assert.assertEquals(0, (actualQuotient - calculator.expressFraction(actualQuotient * y, y)) % base);
     }
 }
