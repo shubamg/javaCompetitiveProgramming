@@ -1,8 +1,10 @@
 package math;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.LongUnaryOperator;
+import java.util.function.UnaryOperator;
 
 /**
  * Assumes polynomial as an array of coefficients
@@ -10,17 +12,23 @@ import java.util.function.LongUnaryOperator;
  */
 public class PolynomialCalculator {
     private final LongUnaryOperator modularOp;
+    private final UnaryOperator<long[]> polyCleanOp;
+    private final static long[] ZERO_POLYNOMIAL = new long[0];
 
     public PolynomialCalculator(final long base) {
         final ModuloCalculator moduloCalculator = new ModuloCalculator(base);
         modularOp = moduloCalculator::getEquivalenceClass;
+        polyCleanOp = UnaryOperator.identity();
     }
 
     public PolynomialCalculator() {
         this.modularOp = LongUnaryOperator.identity();
+        polyCleanOp = this::cleanLeadingZeroes;
     }
 
-    public long[] add(final long[] p1, final long[] p2) {
+    public long[] add(final long[] _p1, final long[] _p2) {
+        final long[] p1 = polyCleanOp.apply(_p1);
+        final long[] p2 = polyCleanOp.apply(_p2);
         final int numCoeffs;
         final long[] smallerPolynomial;
         final long[] largerPolynomial;
@@ -35,7 +43,6 @@ public class PolynomialCalculator {
         }
         final long[] result = new long[numCoeffs];
         final int deltaInLengths = largerPolynomial.length - smallerPolynomial.length;
-        // to iterate from right side
         for (int smallerIndex = 0; smallerIndex < smallerPolynomial.length; smallerIndex++) {
             final int largerIndex = smallerIndex + deltaInLengths;
             result[largerIndex] = modularOp.applyAsLong(modularOp.applyAsLong(smallerPolynomial[smallerIndex])
@@ -44,7 +51,7 @@ public class PolynomialCalculator {
         for (int i = 0; i < deltaInLengths; i++) {
             result[i] = modularOp.applyAsLong(largerPolynomial[i]);
         }
-        return result;
+        return polyCleanOp.apply(result);
     }
 
     public long[] multiply(final long[] p, long scalarMultiplier) {
@@ -62,20 +69,20 @@ public class PolynomialCalculator {
      * @param _p2
      * @return
      */
-    public long[] multiply(final long[] _p1, final long[] _p2) {
-        final int degree1 = _p1.length - 1;
-        final int degree2 = _p2.length - 1;
-        final int degreeOfResult = degree1 + degree2;
-        final long[] result = new long[degreeOfResult + 1];
-        final long[] p1 = new long[_p1.length];
-        final long[] p2 = new long[_p2.length];
+    public long[] multiply(long[] _p1, long[] _p2) {
+        final long[] p1 = polyCleanOp.apply(_p1);
+        final long[] p2 = polyCleanOp.apply(_p2);
         for (int i = 0; i < p1.length; i++) {
-            p1[i] = modularOp.applyAsLong(_p1[i]);
+            p1[i] = modularOp.applyAsLong(p1[i]);
         }
         for (int j = 0; j < p2.length; j++) {
-            p2[j] = modularOp.applyAsLong(_p2[j]);
+            p2[j] = modularOp.applyAsLong(p2[j]);
         }
 
+        final int degree1 = p1.length - 1;
+        final int degree2 = p2.length - 1;
+        final int degreeOfResult = degree1 + degree2;
+        final long[] result = new long[degreeOfResult + 1];
         for (int i = 0; i <= degree1; i++) {
             final int pow1 = degree1 - i;
             for (int j = 0; j <= degree2; j++) {
@@ -85,11 +92,12 @@ public class PolynomialCalculator {
                 result[resultIndex] = modularOp.applyAsLong(result[resultIndex] + modularOp.applyAsLong(p1[i] * p2[j]));
             }
         }
-        return result;
+        return polyCleanOp.apply(result);
     }
 
     public long evaluateAt(final long[] p, final long x) {
-        return substitute(p, new long[]{1})[0];
+        final long[] evalResult = substitute(p, new long[]{x});
+        return evalResult.length == 0 ? 0 : evalResult[0];
     }
 
     /**
@@ -99,7 +107,7 @@ public class PolynomialCalculator {
      * @param pow
      * @return
      */
-    private List<long[]> getAllPowersTill(final long[] base, final int pow) {
+    public List<long[]> getAllPowersTill(final long[] base, final int pow) {
         final List<long[]> result = new ArrayList<>(pow);
         result.add(new long[]{1});
         for (int i = 1; i <= pow; i++) {
@@ -108,16 +116,22 @@ public class PolynomialCalculator {
         return result;
     }
 
-    public long[] substitute(final long[] parent, final long[] child) {
-        final int degreeOfParent = parent.length - 1;
-        final int degreeOfChild = child.length - 1;
-        final List<long[]> powersOfChild = getAllPowersTill(child, degreeOfParent);
-        long[] result = new long[degreeOfChild * degreeOfParent + 1];
+    public long[] substitute(final long[] _parent, final long[] _child) {
+        final long[] parent = polyCleanOp.apply(_parent);
+        final long[] child = polyCleanOp.apply(_child);
+        long[] result = ZERO_POLYNOMIAL;
         for (int parentIndex = 0; parentIndex < parent.length; parentIndex++) {
-            final int powerOfTerm = degreeOfParent - parentIndex;
-            final long[] toAdd = multiply(powersOfChild.get(powerOfTerm), parent[parentIndex]);
-            result = add(result, toAdd);
+            final long[] constantPolynomial = {parent[parentIndex]};
+            result = add(multiply(result, child), constantPolynomial);
         }
-        return result;
+        return polyCleanOp.apply(result);
+    }
+
+    private long[] cleanLeadingZeroes(final long[] input) {
+        int leadingZeroes = 0;
+        for (int i = 0; i < input.length && input[i] == 0; i++) {
+            ++leadingZeroes;
+        }
+        return leadingZeroes > 0 ? Arrays.copyOfRange(input, leadingZeroes, input.length) : input;
     }
 }
