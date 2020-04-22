@@ -49,14 +49,4 @@ public class InputReader {
     public double nextDouble() {
         return Double.parseDouble(next());
     }
-
-    /**
-     * Converts a decimal number into long[]
-     * Eg: 12345.678 --> {12345, 678}
-     * @return - long array of size 2
-     */
-    public long[] nextDecimal() {
-        final String fractionString = next();
-        return Arrays.stream(fractionString.split("\\.")).mapToLong(Long::valueOf).toArray();
-    }
 }

@@ -60,12 +60,12 @@ public class ModuloCalculatorTest {
     @Test
     public void testGetEquivalenceClass() {
         final ModuloCalculator calculator = new ModuloCalculator(17);
-        Assert.assertEquals(1, calculator.getEquivalenceClass(18));
-        Assert.assertEquals(1, calculator.getEquivalenceClass(1));
-        Assert.assertEquals(1, calculator.getEquivalenceClass(35));
-        Assert.assertEquals(2, calculator.getEquivalenceClass(172));
-        Assert.assertEquals(15, calculator.getEquivalenceClass(-172));
-        Assert.assertEquals(16, calculator.getEquivalenceClass(-1));
+        Assert.assertEquals(1, calculator.normalize(18));
+        Assert.assertEquals(1, calculator.normalize(1));
+        Assert.assertEquals(1, calculator.normalize(35));
+        Assert.assertEquals(2, calculator.normalize(172));
+        Assert.assertEquals(15, calculator.normalize(-172));
+        Assert.assertEquals(16, calculator.normalize(-1));
     }
 
     @Test
@@ -130,6 +130,19 @@ public class ModuloCalculatorTest {
             ++exceptionCount;
         }
         Assert.assertEquals(3, exceptionCount);
+    }
+
+    @Test
+    public void testPower() {
+        final ModuloCalculator calculator = new ModuloCalculator(17);
+        Assert.assertEquals(14, calculator.power(-7, 3));
+    }
+
+    @Test
+    public void testDecimalToLong() {
+        final String input = "12345.678";
+        final ModuloCalculator calculator = new ModuloCalculator(17);
+        Assert.assertEquals(15, MathUtils.decimalToLong(input, calculator));
     }
 
     private void testGetQuotient(final long actualQuotient, final long y, final long base) {

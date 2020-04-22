@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static math.ModuloCalculator.NO_BASE;
-
 /**
  * Assumes polynomial as an array of coefficients
  * Index 0 is the coefficient of the highest degree term
@@ -14,12 +12,8 @@ public class PolynomialCalculator {
     private final static long[] ZERO_POLYNOMIAL = new long[0];
     private final ModuloCalculator moduloCalculator;
 
-    public PolynomialCalculator(final long base) {
-        this.moduloCalculator = new ModuloCalculator(base);
-    }
-
-    public PolynomialCalculator() {
-        this(NO_BASE);
+    public PolynomialCalculator(final ModuloCalculator moduloCalculator) {
+        this.moduloCalculator = moduloCalculator;
     }
 
     public long[] add(final long[] _p1, final long[] _p2) {
@@ -76,8 +70,8 @@ public class PolynomialCalculator {
                 final int pow2 = degree2 - j;
                 final int resultingTermPower = pow1 + pow2;
                 final int resultIndex = degreeOfResult - resultingTermPower;
-                result[resultIndex] = moduloCalculator.getEquivalenceClass(
-                        result[resultIndex] + moduloCalculator.getEquivalenceClass(p1[i] * p2[j]));
+                result[resultIndex] = moduloCalculator.normalize(
+                        result[resultIndex] + moduloCalculator.normalize(p1[i] * p2[j]));
             }
         }
         return clean(result);
@@ -120,7 +114,7 @@ public class PolynomialCalculator {
      */
     private long[] clean(final long[] input) {
         int countOfLeadingZeroes = 0;
-        for (int i = 0; i < input.length && moduloCalculator.getEquivalenceClass(input[i]) == 0; i++) {
+        for (int i = 0; i < input.length && moduloCalculator.normalize(input[i]) == 0; i++) {
             ++countOfLeadingZeroes;
         }
         if (countOfLeadingZeroes == input.length) {
@@ -129,7 +123,7 @@ public class PolynomialCalculator {
         final int retLength = input.length - countOfLeadingZeroes;
         final long[] ret = new long[retLength];
         for (int i = countOfLeadingZeroes; i < input.length; i++) {
-            ret[i - countOfLeadingZeroes] = moduloCalculator.getEquivalenceClass(input[i]);
+            ret[i - countOfLeadingZeroes] = moduloCalculator.normalize(input[i]);
         }
         return ret;
     }

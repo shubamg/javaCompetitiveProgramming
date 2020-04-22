@@ -12,7 +12,7 @@ public class PolynomialCalculatorTest {
         //   4*(3x-1)^2 + (3x-1) + 10
         // = 4*(9x^2 - 6x + 1) + 3x + 9
         // = 36x^2 - 21x + 13
-        final PolynomialCalculator polynomialCalculator = new PolynomialCalculator();
+        final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(new ModuloCalculator(0));
         final long[] actualResult = polynomialCalculator.substitute(parentPolynomial, childPolynomial);
         final long[] expectedResult = new long[]{36, -21, 13};
         Assert.assertArrayEquals(expectedResult, actualResult);
@@ -27,14 +27,14 @@ public class PolynomialCalculatorTest {
           = 6x^5 - 17x^4 + 17x^3 + 13x^2 - 29x + 10
          */
         {
-            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator();
+            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(new ModuloCalculator(0));
             final long[] actualResult = polynomialCalculator.multiply(parentPolynomial, childPolynomial);
             final long[] expectedResult = new long[]{6, -17, 17, 13, -29, 10};
             Assert.assertArrayEquals(expectedResult, actualResult);
         }
         // test with mod
         {
-            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(6);
+            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(new ModuloCalculator(6));
             final long[] actualResult = polynomialCalculator.multiply(parentPolynomial, childPolynomial);
             final long[] expectedResult = new long[]{1, 5, 1, 1, 4}; // leading zero not removed because of mod
             Assert.assertArrayEquals(expectedResult, actualResult);
@@ -58,7 +58,7 @@ public class PolynomialCalculatorTest {
           In mod 7: 3x^2 + 4x + 3
          */
 
-        final PolynomialCalculator calculator = new PolynomialCalculator(base);
+        final PolynomialCalculator calculator = new PolynomialCalculator(new ModuloCalculator(base));
         final long[] actualResult = calculator.integrate(integrand, lowerLimit, upperLimit);
         Assert.assertArrayEquals(new long[]{3, 4, 3}, actualResult);
     }

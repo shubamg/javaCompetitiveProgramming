@@ -26,4 +26,14 @@ public class MathUtils {
         final long gcd = child.getGcd();
         return new BezoutRepr(smallCoeff, child.getCoeffSmall(), gcd, child.getNumCalls() + 1);
     }
+
+    // Assumes first character is not decimal or - (for -ve number)
+    public static long decimalToLong(final String decimalNum, final ModuloCalculator calculator) {
+        assert decimalNum.length() > 0 && decimalNum.charAt(0) != '.' && decimalNum.charAt(0) != '-';
+        final String[] split = decimalNum.split("\\.");
+        if (split.length == 1) {
+            return calculator.normalize(Long.parseLong(split[0]));
+        }
+        return calculator.decimalToLong(Long.parseLong(split[0]), Long.parseLong(split[1]), split[1].length());
+    }
 }
