@@ -56,7 +56,7 @@ public class InputReaderTest {
             Assert.assertEquals("def", s2);
         }
         {
-            final long[] fraction = inputReader.nextFraction();
+            final long[] fraction = inputReader.nextDecimal();
             Assert.assertArrayEquals(new long[]{123456, 789}, fraction);
         }
     }

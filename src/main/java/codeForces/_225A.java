@@ -12,7 +12,7 @@ public class _225A {
     private final static char SUM_OF_OPPOSITE_FACES = 7;
     private final int numDices;
     private final char[][] sideNums;
-    private Set<Character> allowedSides = new HashSet<>(NUM_SIDES * 2);
+    private final Set<Character> allowedSides = new HashSet<>(NUM_SIDES * 2);
 
     private _225A(final int numDices, final char[][] sideNums) {
         this.numDices = numDices;

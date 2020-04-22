@@ -5,7 +5,6 @@ public class MathUtils {
      * Assumes x <= y
      * @param smaller - >= 0
      * @param larger  - >= x
-     * @return
      */
     public static BezoutRepr getBezoutRepr(final long smaller, final long larger) {
         assert smaller >= 0;

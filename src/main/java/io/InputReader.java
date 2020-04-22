@@ -1,7 +1,5 @@
 package io;
 
-import com.google.common.base.Preconditions;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,11 +51,11 @@ public class InputReader {
     }
 
     /**
-     * Converts a decimal number into a fraction
-     *
-     * @return - long array of size 2 {Nr, Dr}
+     * Converts a decimal number into long[]
+     * Eg: 12345.678 --> {12345, 678}
+     * @return - long array of size 2
      */
-    public long[] nextFraction() {
+    public long[] nextDecimal() {
         final String fractionString = next();
         return Arrays.stream(fractionString.split("\\.")).mapToLong(Long::valueOf).toArray();
     }

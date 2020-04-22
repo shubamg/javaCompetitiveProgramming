@@ -3,32 +3,28 @@ package math;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.LongUnaryOperator;
-import java.util.function.UnaryOperator;
+
+import static math.ModuloCalculator.NO_BASE;
 
 /**
  * Assumes polynomial as an array of coefficients
  * Index 0 is the coefficient of the highest degree term
  */
 public class PolynomialCalculator {
-    private final LongUnaryOperator modularOp;
-    private final UnaryOperator<long[]> polyCleanOp;
     private final static long[] ZERO_POLYNOMIAL = new long[0];
+    private final ModuloCalculator moduloCalculator;
 
     public PolynomialCalculator(final long base) {
-        final ModuloCalculator moduloCalculator = new ModuloCalculator(base);
-        this.modularOp = moduloCalculator::getEquivalenceClass;
-        this.polyCleanOp = UnaryOperator.identity();
+        this.moduloCalculator = new ModuloCalculator(base);
     }
 
     public PolynomialCalculator() {
-        this.modularOp = LongUnaryOperator.identity();
-        this.polyCleanOp = PolynomialCalculator::cleanLeadingZeroes;
+        this(NO_BASE);
     }
 
     public long[] add(final long[] _p1, final long[] _p2) {
-        final long[] p1 = polyCleanOp.apply(_p1);
-        final long[] p2 = polyCleanOp.apply(_p2);
+        final long[] p1 = clean(_p1);
+        final long[] p2 = clean(_p2);
         final int numCoeffs;
         final long[] smallerPolynomial;
         final long[] largerPolynomial;
@@ -45,13 +41,10 @@ public class PolynomialCalculator {
         final int deltaInLengths = largerPolynomial.length - smallerPolynomial.length;
         for (int smallerIndex = 0; smallerIndex < smallerPolynomial.length; smallerIndex++) {
             final int largerIndex = smallerIndex + deltaInLengths;
-            result[largerIndex] = modularOp.applyAsLong(modularOp.applyAsLong(smallerPolynomial[smallerIndex])
-                                                                + modularOp.applyAsLong(largerPolynomial[largerIndex]));
+            result[largerIndex] = smallerPolynomial[smallerIndex] + largerPolynomial[largerIndex];
         }
-        for (int i = 0; i < deltaInLengths; i++) {
-            result[i] = modularOp.applyAsLong(largerPolynomial[i]);
-        }
-        return polyCleanOp.apply(result);
+        System.arraycopy(largerPolynomial, 0, result, 0, deltaInLengths);
+        return clean(result);
     }
 
     public long[] multiply(final long[] p, long scalarMultiplier) {
@@ -64,19 +57,13 @@ public class PolynomialCalculator {
 
     /**
      * Uses naive way of multiplying. Doesn't use FFT
-     *
-     * @param _p1
-     * @param _p2
-     * @return
      */
     public long[] multiply(long[] _p1, long[] _p2) {
-        final long[] p1 = polyCleanOp.apply(_p1);
-        final long[] p2 = polyCleanOp.apply(_p2);
-        for (int i = 0; i < p1.length; i++) {
-            p1[i] = modularOp.applyAsLong(p1[i]);
-        }
-        for (int j = 0; j < p2.length; j++) {
-            p2[j] = modularOp.applyAsLong(p2[j]);
+        final long[] p1 = clean(_p1);
+        final long[] p2 = clean(_p2);
+
+        if (isZero(p1) || isZero(p2)) {
+            return ZERO_POLYNOMIAL;
         }
 
         final int degree1 = p1.length - 1;
@@ -89,10 +76,15 @@ public class PolynomialCalculator {
                 final int pow2 = degree2 - j;
                 final int resultingTermPower = pow1 + pow2;
                 final int resultIndex = degreeOfResult - resultingTermPower;
-                result[resultIndex] = modularOp.applyAsLong(result[resultIndex] + modularOp.applyAsLong(p1[i] * p2[j]));
+                result[resultIndex] = moduloCalculator.getEquivalenceClass(
+                        result[resultIndex] + moduloCalculator.getEquivalenceClass(p1[i] * p2[j]));
             }
         }
-        return polyCleanOp.apply(result);
+        return clean(result);
+    }
+
+    private boolean isZero(final long[] input) {
+        return Arrays.equals(ZERO_POLYNOMIAL, clean(input));
     }
 
     public long evaluateAt(final long[] p, final long x) {
@@ -102,10 +94,6 @@ public class PolynomialCalculator {
 
     /**
      * Includes pow
-     *
-     * @param base
-     * @param pow
-     * @return
      */
     public List<long[]> getAllPowersTill(final long[] base, final int pow) {
         final List<long[]> result = new ArrayList<>(pow);
@@ -117,21 +105,48 @@ public class PolynomialCalculator {
     }
 
     public long[] substitute(final long[] _parent, final long[] _child) {
-        final long[] parent = polyCleanOp.apply(_parent);
-        final long[] child = polyCleanOp.apply(_child);
+        final long[] parent = clean(_parent);
+        final long[] child = clean(_child);
         long[] result = ZERO_POLYNOMIAL;
-        for (int parentIndex = 0; parentIndex < parent.length; parentIndex++) {
-            final long[] constantPolynomial = {parent[parentIndex]};
+        for (final long coefficientInParent : parent) {
+            final long[] constantPolynomial = {coefficientInParent};
             result = add(multiply(result, child), constantPolynomial);
         }
-        return polyCleanOp.apply(result);
+        return clean(result);
     }
 
-    private static long[] cleanLeadingZeroes(final long[] input) {
+    /**
+     * Performs mod operation and cleans leading zeroes
+     */
+    private long[] clean(final long[] input) {
         int countOfLeadingZeroes = 0;
-        for (int i = 0; i < input.length && input[i] == 0; i++) {
+        for (int i = 0; i < input.length && moduloCalculator.getEquivalenceClass(input[i]) == 0; i++) {
             ++countOfLeadingZeroes;
         }
-        return countOfLeadingZeroes > 0 ? Arrays.copyOfRange(input, countOfLeadingZeroes, input.length) : input;
+        if (countOfLeadingZeroes == input.length) {
+            return ZERO_POLYNOMIAL;
+        }
+        final int retLength = input.length - countOfLeadingZeroes;
+        final long[] ret = new long[retLength];
+        for (int i = countOfLeadingZeroes; i < input.length; i++) {
+            ret[i - countOfLeadingZeroes] = moduloCalculator.getEquivalenceClass(input[i]);
+        }
+        return ret;
+    }
+
+    public long[] integrate(long[] integrand, long[] lowerLimit, long[] upperLimit) {
+        integrand = clean(integrand);
+        lowerLimit = clean(lowerLimit);
+        upperLimit = clean(upperLimit);
+        if (isZero(integrand)) {
+            return ZERO_POLYNOMIAL;
+        }
+        final long[] indefiniteIntegral = new long[integrand.length + 1];
+        final int degreeOfIntegrand = integrand.length - 1;
+        for (int i = 0; i < integrand.length; i++) {
+            final int degreeOfTermInInResult = degreeOfIntegrand - i + 1;
+            indefiniteIntegral[i] = moduloCalculator.getExactQuotient(integrand[i], degreeOfTermInInResult);
+        }
+        return subtract(substitute(indefiniteIntegral, upperLimit), substitute(indefiniteIntegral, lowerLimit));
     }
 }

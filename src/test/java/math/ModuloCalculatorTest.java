@@ -115,17 +115,17 @@ public class ModuloCalculatorTest {
         final ModuloCalculator calculator = new ModuloCalculator(17);
         int exceptionCount = 0;
         try {
-            calculator.expressFraction(13, 0);
+            calculator.getExactQuotient(13, 0);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
         try {
-            calculator.expressFraction(0, 17);
+            calculator.getExactQuotient(0, 17);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
         try {
-            calculator.expressFraction(-1, 17);
+            calculator.getExactQuotient(-1, 17);
         } catch (final AssertionError ignored) {
             ++exceptionCount;
         }
@@ -134,6 +134,6 @@ public class ModuloCalculatorTest {
 
     private void testGetQuotient(final long actualQuotient, final long y, final long base) {
         final ModuloCalculator calculator = new ModuloCalculator(base);
-        Assert.assertEquals(0, (actualQuotient - calculator.expressFraction(actualQuotient * y, y)) % base);
+        Assert.assertEquals(0, (actualQuotient - calculator.getExactQuotient(actualQuotient * y, y)) % base);
     }
 }
