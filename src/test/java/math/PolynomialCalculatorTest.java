@@ -12,7 +12,7 @@ public class PolynomialCalculatorTest {
         //   4*(3x-1)^2 + (3x-1) + 10
         // = 4*(9x^2 - 6x + 1) + 3x + 9
         // = 36x^2 - 21x + 13
-        final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(new ModuloCalculator(0));
+        final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(ModuloCalculator.getWithoutMod());
         final long[] actualResult = polynomialCalculator.substitute(parentPolynomial, childPolynomial);
         final long[] expectedResult = new long[]{36, -21, 13};
         Assert.assertArrayEquals(expectedResult, actualResult);
@@ -27,7 +27,7 @@ public class PolynomialCalculatorTest {
           = 6x^5 - 17x^4 + 17x^3 + 13x^2 - 29x + 10
          */
         {
-            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(new ModuloCalculator(0));
+            final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(ModuloCalculator.getWithoutMod());
             final long[] actualResult = polynomialCalculator.multiply(parentPolynomial, childPolynomial);
             final long[] expectedResult = new long[]{6, -17, 17, 13, -29, 10};
             Assert.assertArrayEquals(expectedResult, actualResult);

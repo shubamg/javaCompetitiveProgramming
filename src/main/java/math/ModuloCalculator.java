@@ -2,11 +2,15 @@ package math;
 
 public class ModuloCalculator {
     private final long base;
-    static final long NO_BASE = 0;
+    private static final long NO_BASE = 0;
 
     public ModuloCalculator(final long base) {
         assert base >= 0;
         this.base = base;
+    }
+
+    public static ModuloCalculator getWithoutMod() {
+        return new ModuloCalculator(NO_BASE);
     }
 
     public long getInverse(final long y) {
@@ -46,6 +50,7 @@ public class ModuloCalculator {
         if (pow == 0) {
             return 1;
         }
+        assert pow > 0;
         long partialResult = _power(_base, pow / 2);
         partialResult = normalize(partialResult * partialResult);
         if (pow % 2 == 1) {
