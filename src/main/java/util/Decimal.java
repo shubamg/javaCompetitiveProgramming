@@ -109,8 +109,12 @@ public class Decimal implements Comparable<Decimal> {
 
     @Override
     public String toString() {
-        return "Decimal{" + "integerPart=" + integerPart + ", fractionalPart=" + fractionalPart + ", fractionalLength="
-                + fractionalLength + ", sign=" + sign + '}';
+        String str = "Decimal{" + (sign > 0 ? "" : "-") + integerPart;
+        if (fractionalLength > 0) {
+            str += ".";
+            str += String.format("%0" + fractionalLength + "d", fractionalPart);
+        }
+        return str + '}';
     }
 
     @Override
