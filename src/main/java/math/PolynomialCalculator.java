@@ -77,7 +77,7 @@ public class PolynomialCalculator {
         return clean(result);
     }
 
-    private boolean isZero(final long[] input) {
+    public boolean isZero(final long[] input) {
         return Arrays.equals(ZERO_POLYNOMIAL, clean(input));
     }
 
@@ -142,5 +142,9 @@ public class PolynomialCalculator {
             indefiniteIntegral[i] = moduloCalculator.getExactQuotient(integrand[i], degreeOfTermInInResult);
         }
         return subtract(substitute(indefiniteIntegral, upperLimit), substitute(indefiniteIntegral, lowerLimit));
+    }
+
+    public static long[] getZeroPolynomial() {
+        return ZERO_POLYNOMIAL;
     }
 }
