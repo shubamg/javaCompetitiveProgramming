@@ -18,7 +18,7 @@ public class BinomialCoefficientsForN {
         compute();
     }
 
-    public void compute() {
+    private void compute() {
         coeffs[0] = 1;
         for (int i = 1; i <= N / 2; i++) {
             coeffs[i] = mod.getExactQuotient(mod.multiply(coeffs[i - 1], N - i + 1), i);
@@ -26,6 +26,8 @@ public class BinomialCoefficientsForN {
     }
 
     public long getCoefficient(final int r) {
+        assert r >= 0;
+        assert r <= N;
         if (r > N / 2) {
             return coeffs[N - r];
         }
