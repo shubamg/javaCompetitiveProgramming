@@ -36,4 +36,10 @@ public class _1467Test {
         final _1467 solver = new _1467(new int[]{6, 6, 6, 6, 6, 6});
         Assert.assertEquals(0.90327, solver.solve(), DELTA);
     }
+
+    @Test
+    public void solve6() {
+        final _1467 solver = new _1467(new int[]{6, 6, 6, 6, 6, 6, 6, 6});
+        Assert.assertEquals(0.85571, solver.solve(), DELTA);
+    }
 }
