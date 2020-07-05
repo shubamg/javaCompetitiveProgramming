@@ -2,6 +2,9 @@ package leetcode;
 
 import java.util.Arrays;
 
+/**
+ * <a href="https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/">Problem link</a>
+ */
 public class _1467 {
     private final int[] balls;
     private final int totalBalls;
