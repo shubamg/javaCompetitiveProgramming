@@ -63,7 +63,7 @@ public class _1467 {
     }
 
     private static double getNumArrangements(final int[] balls) {
-        long denominator = 1;
+        double denominator = 1;
         int sum = 0;
         for (final int ball : balls) {
             denominator *= getAccurateFactorial(ball);
