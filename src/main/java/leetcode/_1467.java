@@ -48,13 +48,13 @@ public class _1467 {
             return 0;
         }
         final int sum2 = totalBalls - sum1;
-        final long denominator = getDenominator(ballsInFirstBox, ballsInSecondBox);
+        final double denominator = getDenominator(ballsInFirstBox, ballsInSecondBox);
         return (getLargeFactorial(sum1) * getLargeFactorial(sum2)) / denominator;
     }
 
-    private long getDenominator(final int[] ballsInFirstBox, final int[] ballsInSecondBox) {
+    private double getDenominator(final int[] ballsInFirstBox, final int[] ballsInSecondBox) {
         assert ballsInFirstBox.length == ballsInSecondBox.length;
-        long denominator = 1;
+        double denominator = 1;
         for (int i = 0; i < ballsInFirstBox.length; i++) {
             denominator *= getAccurateFactorial(ballsInFirstBox[i]);
             denominator *= getAccurateFactorial(ballsInSecondBox[i]);
