@@ -98,10 +98,4 @@ public class _1467 {
     private static double getLargeFactorial(final int n) {
         return n == 0 ? 1 : n * getLargeFactorial(n - 1);
     }
-
-    public static void main(String[] args) {
-        final int[] input = {6, 6, 6, 6, 6, 6};
-        final _1467 solver = new _1467(input);
-        System.out.println(solver.solve());
-    }
 }
