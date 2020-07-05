@@ -91,6 +91,7 @@ public class _1467 {
     }
 
     private static long getAccurateFactorial(final int n) {
+        assert n <= 20 && n >= 0;
         return n == 0 ? 1 : n * getAccurateFactorial(n - 1);
     }
 
