@@ -13,7 +13,7 @@ public class _3384 {
         System.out.println(new _3384().threeSum(num));
     }
 
-    public List<List<Integer>> threeSum(int[] nums) {
+    private List<List<Integer>> threeSum(int[] nums) {
         final List<List<Integer>> triplets = new ArrayList<>();
         Arrays.sort(nums);
         final NavigableMap<Integer, Long> nums2Freq = Arrays.stream(nums).boxed().
@@ -21,7 +21,10 @@ public class _3384 {
         for (final int num1 : nums2Freq.keySet()) {
             for (final int num2 : nums2Freq.descendingKeySet()) {
                 final int thirdReq = -(num1 + num2);
-                if (thirdReq < num1 || thirdReq > num2) {
+                if (thirdReq < num1) {
+                    continue;
+                }
+                if (thirdReq > num2) {
                     break;
                 }
                 if (!nums2Freq.containsKey(thirdReq)) {
