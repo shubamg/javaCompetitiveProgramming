@@ -60,10 +60,10 @@ public class _3385 {
             System.out.format("Pushing child with %d index and %d level\n", leftIndex, childLevel);
             queue.add(leftChildInfo);
         }
-        final TreeNode rightNode = parentNode.right;
-        if (rightNode != null) {
+        final TreeNode rightChild = parentNode.right;
+        if (rightChild != null) {
             final int rightIndex = parentNodeInfo.getIndex() * 2 + 1;
-            final TreeNodeInfo rightChildInfo = new TreeNodeInfo(leftChild, childLevel, rightIndex);
+            final TreeNodeInfo rightChildInfo = new TreeNodeInfo(rightChild, childLevel, rightIndex);
             System.out.format("Pushing child with %d index and %d level\n", rightIndex, childLevel);
             queue.add(rightChildInfo);
         }
