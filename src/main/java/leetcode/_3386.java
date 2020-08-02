@@ -11,8 +11,8 @@ public class _3386 {
 
     private Node getFlattenedTail(final Node prev, final Node head) {
         assert head != null;
+        head.prev = prev;
         if (head.child == null && head.next == null) {
-            head.prev = prev;
             return head;
         }
         if (head.child == null) {
@@ -22,7 +22,6 @@ public class _3386 {
         if (head.next == null) {
             head.next = head.child;
             head.child = null;
-            head.prev = prev;
             return tailOfChild;
         }
         // both tail and child exist
@@ -30,7 +29,6 @@ public class _3386 {
         tailOfChild.next = head.next;
         head.next = head.child;
         head.child = null;
-        head.prev = prev;
         return tailOfNext;
     }
 }
