@@ -1,5 +1,6 @@
 package leetcode;
 
+import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,6 +9,7 @@ public class _3385 {
     public static final int ROOT_LEVEL = 0;
     public static final int MIN_WIDTH = 0;
     public static final int DEFAULT_LEVEL_WIDTH = 0;
+    private static final boolean isDebugEnabled = false;
     private final Queue<TreeNodeInfo> queue = new LinkedList<>();
     private int currentLevel = ROOT_LEVEL;
     private int maxWidthTillNow = MIN_WIDTH;
@@ -21,7 +23,7 @@ public class _3385 {
             final TreeNodeInfo headNodeInfo = queue.poll();
             final int headLevel = headNodeInfo.getLevel();
             final int headIndex = headNodeInfo.getIndex();
-            System.out.format("Got head node with %d index and %d level\n", headIndex, headLevel);
+            debug("Got head node with %d index and %d level\n", headIndex, headLevel);
             if (currentLevel < headLevel) {
                 processLevelEnd(headLevel, headIndex);
             }
@@ -30,18 +32,26 @@ public class _3385 {
             } else {
                 throw new IllegalStateException("Not possible");
             }
-            System.out.format("Current state is currentLevel=%d, currLevelBeginning=%d, currLevelWidthTillNow=%d\n",
-                              currentLevel,
-                              currLevelBeginning,
-                              currLevelWidthTillNow);
+            printState();
             populateChildren(headNodeInfo);
         }
         maxWidthTillNow = Math.max(maxWidthTillNow, currLevelWidthTillNow);
-        System.out.format("Current state is currentLevel=%d, currLevelBeginning=%d, currLevelWidthTillNow=%d\n",
-                          currentLevel,
-                          currLevelBeginning,
-                          currLevelWidthTillNow);
+        printState();
         return maxWidthTillNow;
+    }
+
+    private PrintStream printState() {
+        return debug("Current state is currentLevel=%d, currLevelBeginning=%d, currLevelWidthTillNow=%d\n",
+                     currentLevel,
+                     currLevelBeginning,
+                     currLevelWidthTillNow);
+    }
+
+    public PrintStream debug(String format, Object... args) {
+        if (isDebugEnabled) {
+            return System.out.format(format, args);
+        }
+        return null;
     }
 
     private void processLevelEnd(final int headLevel, final int headIndex) {
@@ -57,7 +67,7 @@ public class _3385 {
         if (leftChild != null) {
             final int leftIndex = parentNodeInfo.getIndex() * 2;
             final TreeNodeInfo leftChildInfo = new TreeNodeInfo(leftChild, childLevel, leftIndex);
-            System.out.format("Pushing child with %d index and %d level\n", leftIndex, childLevel);
+            debug("Pushing child with %d index and %d level\n", leftIndex, childLevel);
             queue.add(leftChildInfo);
         }
         final TreeNode rightChild = parentNode.right;
