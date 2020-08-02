@@ -42,6 +42,16 @@ class Node {
     public Node next;
     public Node child;
 
+    public Node() {
+    }
+
+    public Node(final int val, final Node prev, final Node next, final Node child) {
+        this.val = val;
+        this.prev = prev;
+        this.next = next;
+        this.child = child;
+    }
+
     @Override
     public String toString() {
         return "Node{" + "val=" + val + ", prev=" + (prev == null ? null : prev.val) + ", next=" + (next == null ?
