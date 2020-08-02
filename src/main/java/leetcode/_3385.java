@@ -74,7 +74,7 @@ public class _3385 {
         if (rightChild != null) {
             final int rightIndex = parentNodeInfo.getIndex() * 2 + 1;
             final TreeNodeInfo rightChildInfo = new TreeNodeInfo(rightChild, childLevel, rightIndex);
-            System.out.format("Pushing child with %d index and %d level\n", rightIndex, childLevel);
+            debug("Pushing child with %d index and %d level\n", rightIndex, childLevel);
             queue.add(rightChildInfo);
         }
     }
