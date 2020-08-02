@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class _3385 {
-    public static final int ROOT_INDEX = 1;
-    public static final int ROOT_LEVEL = 0;
-    public static final int MIN_WIDTH = 0;
-    public static final int DEFAULT_LEVEL_WIDTH = 0;
+    private static final int ROOT_INDEX = 1;
+    private static final int ROOT_LEVEL = 0;
+    private static final int MIN_WIDTH = 0;
+    private static final int DEFAULT_LEVEL_WIDTH = 0;
     private static final boolean isDebugEnabled = false;
     private final Queue<TreeNodeInfo> queue = new LinkedList<>();
     private int currentLevel = ROOT_LEVEL;
