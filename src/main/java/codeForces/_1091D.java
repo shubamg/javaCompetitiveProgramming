@@ -31,6 +31,6 @@ public class _1091D {
             badCuts = moduloCalculator.add(moduloCalculator.multiply(badCuts, i), moduloCalculator.power(i - 1, 2));
         }
         final long totalCuts = moduloCalculator.subtract(moduloCalculator.multiply(N, factorial), N - 1);
-        return totalCuts - badCuts;
+        return moduloCalculator.subtract(totalCuts, badCuts);
     }
 }

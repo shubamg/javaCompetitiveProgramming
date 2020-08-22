@@ -30,4 +30,10 @@ public class _1091DTest {
         final _1091D solver = new _1091D(10);
         MatcherAssert.assertThat(solver.solve(), is(equalTo(30052700L)));
     }
+
+    @Test
+    public void solveFor12() {
+        final _1091D solver = new _1091D(12);
+        MatcherAssert.assertThat(solver.solve(), is(equalTo(931982044L)));
+    }
 }
