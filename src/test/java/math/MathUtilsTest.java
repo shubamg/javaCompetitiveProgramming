@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import util.Decimal;
 
-import static org.junit.Assert.*;
-
 public class MathUtilsTest {
 
     @Test
@@ -17,16 +15,16 @@ public class MathUtilsTest {
         testBezout(63245986, 102334155);
     }
 
-    private void testBezout(final long smaller, final long larger) {
+    private void testBezout(long smaller, final long larger) {
         final String OUT_TMPL = "(%d)*(%d) + (%d)*(%d) = %d in %d calls";
         final BezoutRepr bezoutRepr = MathUtils.getBezoutRepr(smaller, larger);
-        System.out.println(String.format(OUT_TMPL,
-                                         bezoutRepr.getCoeffSmall(),
-                                         smaller,
-                                         bezoutRepr.getCoeffLarge(),
-                                         larger,
-                                         bezoutRepr.getGcd(),
-                                         bezoutRepr.getNumCalls()));
+        System.out.printf((OUT_TMPL) + "%n",
+                          bezoutRepr.getCoeffSmall(),
+                          smaller,
+                          bezoutRepr.getCoeffLarge(),
+                          larger,
+                          bezoutRepr.getGcd(),
+                          bezoutRepr.getNumCalls());
         final long gcd = bezoutRepr.getGcd();
         Assert.assertEquals(gcd, bezoutRepr.getCoeffSmall() * smaller + bezoutRepr.getCoeffLarge() * larger);
         Assert.assertEquals(0, smaller % gcd);
