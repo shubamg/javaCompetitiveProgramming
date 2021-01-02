@@ -5,6 +5,9 @@ import math.PolynomialCalculator;
 
 import java.util.Arrays;
 
+/*
+ * Uses ordinary generating function to count number of ways of winning
+ */
 public class Prob205 {
     private static final long[] _4_ONES = {1L, 1L, 1L, 1L, 0L};
     private static final long[] _6_ONES = {1L, 1L, 1L, 1L, 1L, 1L, 0L};
@@ -13,10 +16,6 @@ public class Prob205 {
 
     private Prob205(final PolynomialCalculator polyCal) {
         this.polyCal = polyCal;
-    }
-
-    private static void print(final Iterable<long[]> longArrays) {
-        longArrays.forEach(array -> System.out.println(Arrays.toString(array)));
     }
 
     private static long[] cumulativeSum(final long[] arr) {
