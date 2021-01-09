@@ -42,7 +42,7 @@ public class ModuloCalculator {
         return x / y;
     }
 
-    public long power(final long _base, final int pow) {
+    public long power(final long _base, final long pow) {
         return _power(normalize(_base), pow);
     }
 
