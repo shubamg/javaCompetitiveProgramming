@@ -30,7 +30,7 @@ public class MathUtils {
     }
 
     // Assumes first character is not decimal or - (for -ve number)
-    public static Decimal getDecimal(final String decimalNum, final ModuloCalculator calculator) {
+    public static Decimal getDecimal(final String decimalNum) {
         assert decimalNum.length() > 0 && decimalNum.charAt(0) != '.' && decimalNum.charAt(0) != '-';
         final String[] split = decimalNum.split("\\.");
         if (split.length == 1) {

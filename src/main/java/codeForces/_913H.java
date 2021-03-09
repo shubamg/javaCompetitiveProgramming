@@ -39,7 +39,7 @@ public class _913H {
         this.polynomialCalculator = polynomialCalculator;
         this.N = decimalStrings.length;
         x_es = Collections.unmodifiableList(Arrays.stream(decimalStrings)
-                                                  .map(d -> MathUtils.getDecimal(d, moduloCalculator))
+                                                  .map(MathUtils::getDecimal)
                                                   .collect(Collectors.toList()));
         for (final Decimal x : x_es) {
             addLongOfDecimal(x);
