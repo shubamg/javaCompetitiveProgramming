@@ -23,7 +23,6 @@ public class Prob624 {
 
     private long solve(final long n) {
         final long[][] fibonacciNums = matrixCalculator.power(FIBONACCI_MATRIX, n);
-        final long f_n = fibonacciNums[0][1];
         final long f_nPlus1 = fibonacciNums[0][0];
         final long f_nMinus1 = fibonacciNums[1][1];
         final long powOf2 = moduloCalculator.power(2L, n);
