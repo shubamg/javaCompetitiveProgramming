@@ -72,7 +72,7 @@ public class MatrixCalculator {
         return result;
     }
 
-    final long[][] power(final long[][] base, final long pow) {
+    public final long[][] power(final long[][] base, final long pow) {
         isAMatrix(base);
         assert base.length == base[0].length;
 
