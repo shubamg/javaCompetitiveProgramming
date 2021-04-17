@@ -18,11 +18,11 @@ public class ModuloCalculatorTest {
         Assert.assertTrue(xInverse > 0);
         Assert.assertTrue(xInverse < base);
         Assert.assertEquals(1, (xInverse * x) % base);
-        System.out.println(String.format("inv(%d) (mod %d) = %d", x, base, xInverse));
+        System.out.printf("inv(%d) (mod %d) = %d%n", x, base, xInverse);
     }
 
     /**
-     * Inverse doesn't exist as x is multiple of base
+     * Inverse doesn't exist as x is not co-prime with base
      */
     @Test(expected = AssertionError.class)
     public void testNoInverse() {

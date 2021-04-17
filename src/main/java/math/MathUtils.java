@@ -24,7 +24,7 @@ public class MathUtils {
         // => b' = a
         // gcd(r, x): x = q2*r + r2 => gcd = r2 = x - q2*r1 (1, -q2)
         final BezoutRepr child = getBezoutRepr(r, smaller);
-        long smallCoeff = child.getCoeffLarge() - child.getCoeffSmall() * q;
+        long smallCoeff = Math.addExact(child.getCoeffLarge(), -child.getCoeffSmall() * q);
         final long gcd = child.getGcd();
         return new BezoutRepr(smallCoeff, child.getCoeffSmall(), gcd, child.getNumCalls() + 1);
     }
