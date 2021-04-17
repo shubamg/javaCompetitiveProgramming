@@ -1,5 +1,7 @@
 package math;
 
+import java.math.BigInteger;
+
 public class ModuloCalculator {
     private final long base;
     private static final long NO_BASE = 0;
@@ -14,7 +16,7 @@ public class ModuloCalculator {
     }
 
     public long getInverse(final long y) {
-        assert base > 0;
+        assert base != NO_BASE;
         final long x = normalize(y);
         assert x > 0;
         final BezoutRepr bezoutRepr = MathUtils.getBezoutRepr(x, base);
@@ -23,7 +25,14 @@ public class ModuloCalculator {
     }
 
     public long add(final long x, final long y) {
-        return normalize(Math.addExact(normalize(x), normalize(y)));
+        final long normalizedX = normalize(x);
+        final long normalizedY = normalize(y);
+        try {
+            final long result = Math.addExact(normalizedX, normalizedY);
+            return normalize(result);
+        } catch (final ArithmeticException e) {
+            return addWithBigInteger(normalizedX, normalizedY);
+        }
     }
 
     public long subtract(final long x, final long y) {
@@ -31,7 +40,14 @@ public class ModuloCalculator {
     }
 
     public long multiply(final long x, final long y) {
-        return normalize(Math.multiplyExact(normalize(x), normalize(y)));
+        final long normalizedX = normalize(x);
+        final long normalizedY = normalize(y);
+        try {
+            final long result = Math.multiplyExact(normalizedX, normalizedY);
+            return normalize(result);
+        } catch (final ArithmeticException e) {
+            return multiplyWithBigInteger(normalizedX, normalizedY);
+        }
     }
 
     public long getExactQuotient(final long x, final long y) {
@@ -52,23 +68,35 @@ public class ModuloCalculator {
         }
         assert pow > 0;
         long partialResult = _power(_base, pow / 2);
-        partialResult = normalize(Math.multiplyExact(partialResult, partialResult));
+        partialResult = multiply(partialResult, partialResult);
         if (pow % 2 == 1) {
-            partialResult = normalize(Math.multiplyExact(partialResult, _base));
+            partialResult = multiply(partialResult, _base);
         }
         return partialResult;
+    }
+
+    private long addWithBigInteger(final long normalizedX, final long normalizedY) {
+        final BigInteger bigX = BigInteger.valueOf(normalizedX);
+        final BigInteger bigY = BigInteger.valueOf(normalizedY);
+        return normalize(bigX.add(bigY).remainder(BigInteger.valueOf(base)).longValueExact());
+    }
+
+    private long multiplyWithBigInteger(final long normalizedX, final long normalizedY) {
+        final BigInteger bigX = BigInteger.valueOf(normalizedX);
+        final BigInteger bigY = BigInteger.valueOf(normalizedY);
+        return normalize(bigX.multiply(bigY).remainder(BigInteger.valueOf(base)).longValueExact());
     }
 
     /**
      * @return a value b/w 0 <= ret < b
      */
     public long normalize(final long y) {
-        if (base == 0) {
+        if (base == NO_BASE) {
             return y;
         }
         long x = y % base;
         if (x < 0) {
-            x = Math.addExact(base, x);
+            x = base + x;
         }
         return x;
     }

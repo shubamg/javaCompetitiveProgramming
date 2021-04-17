@@ -36,7 +36,6 @@ public class MathUtilsTest {
     @Test
     public void testGetDecimal() {
         final String input = "12345.000678";
-        final ModuloCalculator calculator = new ModuloCalculator(17);
         Assert.assertEquals(new Decimal(12345, 678, 6, true), MathUtils.getDecimal(input));
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Assumes polynomial as an array of coefficients
  * Index 0 is the coefficient of the highest degree term
+ * Might have overflow and underflow issues
  */
 public class PolynomialCalculator {
     private final static long[] ZERO_POLYNOMIAL = new long[0];

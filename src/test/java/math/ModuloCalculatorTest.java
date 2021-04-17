@@ -21,17 +21,17 @@ public class ModuloCalculatorTest {
         System.out.printf("inv(%d) (mod %d) = %d%n", x, base, xInverse);
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void testBigMultiplication() {
         final ModuloCalculator calculator = new ModuloCalculator(1_307_674_368_000L);
-        calculator.multiply(365_435_296_162L, 365_435_296_162L);
+        Assert.assertEquals(500_902_554_244L, calculator.multiply(365_435_296_162L, 365_435_296_162L));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void testBigAddition() {
         final ModuloCalculator calculator = new ModuloCalculator(Long.MAX_VALUE);
         final long bigNumber = Long.MAX_VALUE - 1;
-        calculator.add(bigNumber, bigNumber);
+        Assert.assertEquals(Long.MAX_VALUE - 2, calculator.add(bigNumber, bigNumber));
     }
 
     @Test()
