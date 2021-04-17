@@ -21,6 +21,27 @@ public class ModuloCalculatorTest {
         System.out.printf("inv(%d) (mod %d) = %d%n", x, base, xInverse);
     }
 
+    @Test(expected = ArithmeticException.class)
+    public void testBigMultiplication() {
+        final ModuloCalculator calculator = new ModuloCalculator(1_307_674_368_000L);
+        calculator.multiply(365_435_296_162L, 365_435_296_162L);
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testBigAddition() {
+        final ModuloCalculator calculator = new ModuloCalculator(Long.MAX_VALUE);
+        final long bigNumber = Long.MAX_VALUE - 1;
+        calculator.add(bigNumber, bigNumber);
+    }
+
+    @Test()
+    public void testBigSubtraction() {
+        final ModuloCalculator calculator = new ModuloCalculator(Long.MAX_VALUE);
+        final long bigNumber = Long.MAX_VALUE - 1;
+        final long result = calculator.subtract(0, bigNumber);
+        Assert.assertEquals(1, result);
+    }
+
     /**
      * Inverse doesn't exist as x is not co-prime with base
      */

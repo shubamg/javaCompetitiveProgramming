@@ -23,7 +23,7 @@ public class ModuloCalculator {
     }
 
     public long add(final long x, final long y) {
-        return normalize(normalize(x) + normalize(y));
+        return normalize(Math.addExact(normalize(x), normalize(y)));
     }
 
     public long subtract(final long x, final long y) {
@@ -31,7 +31,7 @@ public class ModuloCalculator {
     }
 
     public long multiply(final long x, final long y) {
-        return normalize(normalize(x) * normalize(y));
+        return normalize(Math.multiplyExact(normalize(x), normalize(y)));
     }
 
     public long getExactQuotient(final long x, final long y) {
@@ -52,9 +52,9 @@ public class ModuloCalculator {
         }
         assert pow > 0;
         long partialResult = _power(_base, pow / 2);
-        partialResult = normalize(partialResult * partialResult);
+        partialResult = normalize(Math.multiplyExact(partialResult, partialResult));
         if (pow % 2 == 1) {
-            partialResult = normalize(partialResult * _base);
+            partialResult = normalize(Math.multiplyExact(partialResult, _base));
         }
         return partialResult;
     }
@@ -68,7 +68,7 @@ public class ModuloCalculator {
         }
         long x = y % base;
         if (x < 0) {
-            x = base + x;
+            x = Math.addExact(base, x);
         }
         return x;
     }
