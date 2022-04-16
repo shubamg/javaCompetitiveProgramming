@@ -4,7 +4,6 @@ import io.InputReader;
 import math.Calculator;
 import math.CappedCalculator;
 import math.MatrixCalculator;
-import math.ModuloCalculator;
 import util.Pair;
 
 import java.io.BufferedReader;
@@ -55,7 +54,7 @@ public class InfiniTree {
         long lowerBoundOnExpo = upperBoundOnExpo / 2 + 1;
         while(lowerBoundOnExpo < upperBoundOnExpo) {
             long middle = (lowerBoundOnExpo + upperBoundOnExpo) / 2;
-            final long[][] matrixPower = matrixCalculator.power(multiplierMatrix, middle);
+            final long[][] matrixPower = getMatrixPowerFromCache(middle);
             final long total = getTotal(matrixPower);
             if (total < B) {
                 lowerBoundOnExpo = middle + 1;
@@ -64,6 +63,10 @@ public class InfiniTree {
             }
         }
         return lowerBoundOnExpo;
+    }
+
+    private long[][] getMatrixPowerFromCache(final long middle) {
+        return expo2Matrix.computeIfAbsent(middle, k -> matrixCalculator.power(multiplierMatrix, middle));
     }
 
     private long getUpperLimit() {
