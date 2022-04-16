@@ -99,8 +99,12 @@ public class InfiniTree {
             // 0 is leaf (White) and 1 is root
             final int leftNode = childNodePair.getKey() - 1;
             final int rightNode = childNodePair.getValue() - 1;
-            multiplierMatrix[leftNode][parent] += 1;
-            multiplierMatrix[rightNode][parent] += 1;
+            if (leftNode != -1) {
+                multiplierMatrix[leftNode][parent] += 1;
+            }
+            if (rightNode != -1) {
+                multiplierMatrix[rightNode][parent] += 1;
+            }
             parent++;
         }
     }
