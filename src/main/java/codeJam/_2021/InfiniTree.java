@@ -16,13 +16,14 @@ import java.util.List;
  * on 15 Apr 2022.
  */
 public class InfiniTree {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     final int N;
     final long A;
     final long B;
     final long[][] multiplierMatrix;
     final long[] initState;
     final MatrixCalculator matrixCalculator;
+    private final ModuloCalculator moduloCalculator;
 
     public InfiniTree(final int n, final long a, final long b, final List<Pair<Integer, Integer>> childNodePairs) {
         assert a == 1;
@@ -33,7 +34,8 @@ public class InfiniTree {
         this.initState = new long[2 * (N + 1)];
         populateMultiplierMatrix(childNodePairs);
         populateInitState();
-        matrixCalculator = new MatrixCalculator(ModuloCalculator.getWithoutMod());
+        moduloCalculator = ModuloCalculator.getWithoutMod();
+        matrixCalculator = new MatrixCalculator(moduloCalculator);
     }
 
     private long solve() {
@@ -77,7 +79,7 @@ public class InfiniTree {
     private long getTotal(final long[][] matrixPower) {
         long sum = 0L;
         for (int i = 0; i <= N; i++) {
-            sum += matrixPower[i + (N + 1)][1];
+            sum = moduloCalculator.add(sum, matrixPower[i + (N + 1)][1]);
         }
         return sum;
     }
