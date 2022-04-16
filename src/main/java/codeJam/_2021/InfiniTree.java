@@ -30,11 +30,35 @@ public class InfiniTree {
         matrixCalculator = new MatrixCalculator(ModuloCalculator.getWithoutMod());
     }
 
-    private long binSearch() {
-        long[][] matrixPower = multiplierMatrix;
-        while(getTotal(matrixPower) <= B) {
-            matrixPower = matrixCalculator.power(matrixPower, 2);
+    long solve() {
+        final long upperBoundOnExpo = getUpperLimit();
+        final long resultExpo = binSearch(upperBoundOnExpo);
+        return resultExpo - 1;
+    }
+
+    private long binSearch(long upperBoundOnExpo) {
+        long lowerBoundOnExpo = upperBoundOnExpo / 2 + 1;
+        while(lowerBoundOnExpo < upperBoundOnExpo) {
+            long middle = (lowerBoundOnExpo + upperBoundOnExpo) / 2;
+            final long[][] matrixPower = matrixCalculator.power(multiplierMatrix, middle);
+            final long total = getTotal(matrixPower);
+            if (total < B) {
+                lowerBoundOnExpo = middle + 1;
+            } else{
+                upperBoundOnExpo = middle;
+            }
         }
+        return lowerBoundOnExpo;
+    }
+
+    private long getUpperLimit() {
+        long[][] matrixPower = multiplierMatrix;
+        long expo = 1;
+        while(getTotal(matrixPower) < B) {
+            matrixPower = matrixCalculator.power(matrixPower, 2);
+            expo *= 2;
+        }
+        return expo;
     }
 
     private long getTotal(final long[][] matrixPower) {
