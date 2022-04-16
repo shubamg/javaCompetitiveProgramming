@@ -66,8 +66,8 @@ public class InfiniTree {
         return lowerBoundOnExpo;
     }
 
-    private long[][] getMatrixPowerFromCache(final long middle) {
-        return expo2Matrix.computeIfAbsent(middle, k -> computeAbsentExpo(middle));
+    private long[][] getMatrixPowerFromCache(final long expo) {
+        return expo2Matrix.computeIfAbsent(expo, k -> computeAbsentExpo(expo));
     }
 
     private long[][] computeAbsentExpo(final long expo) {
