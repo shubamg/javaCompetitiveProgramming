@@ -1,10 +1,10 @@
 package math;
 
 public class MatrixCalculator {
-    private final ModuloCalculator moduloCalculator;
+    private final Calculator calculator;
 
-    public MatrixCalculator(final ModuloCalculator moduloCalculator) {
-        this.moduloCalculator = moduloCalculator;
+    public MatrixCalculator(final Calculator calculator) {
+        this.calculator = calculator;
     }
 
     private static long[][] identity(final int n) {
@@ -52,7 +52,7 @@ public class MatrixCalculator {
         final long[][] result = new long[A.length][A[0].length];
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < result[i].length; j++) {
-                result[i][j] = moduloCalculator.add(A[i][j], B[i][j]);
+                result[i][j] = calculator.add(A[i][j], B[i][j]);
             }
         }
         return result;
@@ -65,7 +65,7 @@ public class MatrixCalculator {
             for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = 0L;
                 for (int k = 0; k < A[i].length; k++) {
-                    result[i][j] = moduloCalculator.add(result[i][j], moduloCalculator.multiply(A[i][k], B[k][j]));
+                    result[i][j] = calculator.add(result[i][j], calculator.multiply(A[i][k], B[k][j]));
                 }
             }
         }
