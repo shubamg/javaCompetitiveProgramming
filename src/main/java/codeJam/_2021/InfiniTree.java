@@ -1,6 +1,7 @@
 package codeJam._2021;
 
 import math.MatrixCalculator;
+import math.ModuloCalculator;
 import util.Pair;
 
 import java.util.List;
@@ -15,8 +16,10 @@ public class InfiniTree {
     final long B;
     final long[][] multiplierMatrix;
     final long[] initState;
+    final MatrixCalculator matrixCalculator;
 
     public InfiniTree(final int n, final long a, final long b, final List<Pair<Integer, Integer>> childNodePairs) {
+        assert a == 1;
         N = n;
         A = a;
         B = b;
@@ -24,6 +27,22 @@ public class InfiniTree {
         this.initState = new long[2 * N];
         populateMultiplierMatrix(childNodePairs);
         populateInitState();
+        matrixCalculator = new MatrixCalculator(ModuloCalculator.getWithoutMod());
+    }
+
+    private long binSearch() {
+        long[][] matrixPower = multiplierMatrix;
+        while(getTotal(matrixPower) <= B) {
+            matrixPower = matrixCalculator.power(matrixPower, 2);
+        }
+    }
+
+    private long getTotal(final long[][] matrixPower) {
+        long sum = 0L;
+        for (int i = 0; i < N; i++) {
+            sum += matrixPower[i + N][0];
+        }
+        return sum;
     }
 
     private void populateInitState() {
