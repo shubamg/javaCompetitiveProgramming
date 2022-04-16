@@ -67,17 +67,17 @@ public class InfiniTree {
     }
 
     private long[][] getMatrixPowerFromCache(final long middle) {
-        final Map.Entry<Long, long[][]> floorEntry = expo2Matrix.floorEntry(middle);
+        return expo2Matrix.computeIfAbsent(middle, k -> computeAbsentExpo(middle));
+    }
+
+    private long[][] computeAbsentExpo(final long expo) {
+        final Map.Entry<Long, long[][]> floorEntry = expo2Matrix.floorEntry(expo);
         final long floorKey = floorEntry.getKey();
         final long[][] floorPower = floorEntry.getValue();
-        if (floorKey == middle) {
-            return floorPower;
-        }
-        final long diffKey = middle - floorKey;
+        assert floorKey != expo;
+        final long diffKey = expo - floorKey;
         final long[][] diffPow = getMatrixPowerFromCache(diffKey);
-        final long[][] result = matrixCalculator.multiply(floorPower, diffPow);
-        expo2Matrix.put(middle, result);
-        return result;
+        return matrixCalculator.multiply(floorPower, diffPow);
     }
 
     private long getUpperLimit() {
