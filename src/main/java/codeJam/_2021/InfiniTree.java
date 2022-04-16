@@ -76,8 +76,8 @@ public class InfiniTree {
 
     private long getTotal(final long[][] matrixPower) {
         long sum = 0L;
-        for (int i = 0; i < N; i++) {
-            sum += matrixPower[i + N][0];
+        for (int i = 0; i <= N; i++) {
+            sum += matrixPower[i + (N + 1)][1];
         }
         return sum;
     }
