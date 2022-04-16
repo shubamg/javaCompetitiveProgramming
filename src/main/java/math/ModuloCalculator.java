@@ -2,7 +2,7 @@ package math;
 
 import java.math.BigInteger;
 
-public class ModuloCalculator {
+public class ModuloCalculator implements Calculator {
     private final long base;
     private static final long NO_BASE = 0;
 
@@ -24,6 +24,7 @@ public class ModuloCalculator {
         return normalize(bezoutRepr.getCoeffSmall());
     }
 
+    @Override
     public long add(final long x, final long y) {
         final long normalizedX = normalize(x);
         final long normalizedY = normalize(y);
@@ -39,6 +40,7 @@ public class ModuloCalculator {
         return add(x, -y);
     }
 
+    @Override
     public long multiply(final long x, final long y) {
         final long normalizedX = normalize(x);
         final long normalizedY = normalize(y);
