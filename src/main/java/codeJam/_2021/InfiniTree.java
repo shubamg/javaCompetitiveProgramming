@@ -29,8 +29,8 @@ public class InfiniTree {
         N = n;
         A = a;
         B = b;
-        this.multiplierMatrix = MatrixCalculator.getZeroMatrix(2 * N);
-        this.initState = new long[2 * N];
+        this.multiplierMatrix = MatrixCalculator.getZeroMatrix(2 * (N + 1));
+        this.initState = new long[2 * (N + 1)];
         populateMultiplierMatrix(childNodePairs);
         populateInitState();
         matrixCalculator = new MatrixCalculator(ModuloCalculator.getWithoutMod());
@@ -83,10 +83,8 @@ public class InfiniTree {
     }
 
     private void populateInitState() {
-        for (int i = 1; i < initState.length; i++) {
-            initState[i] = 0;
-        }
-        initState[0] = 1;
+        Arrays.fill(initState, 0);
+        initState[1] = 1;
     }
 
     private void populateMultiplierMatrix(final List<Pair<Integer, Integer>> childNodePairs) {
@@ -95,26 +93,22 @@ public class InfiniTree {
     }
 
     private void populateBottom() {
-        for (int i = 0; i < N; i++) {
-            final int row = i + N;
+        for (int i = 0; i <= N; i++) {
+            final int row = i + (N + 1);
             multiplierMatrix[row][i] = 1L;
             multiplierMatrix[row][row] = 1L;
         }
     }
 
     private void populateTopLeft(final List<Pair<Integer, Integer>> childNodePairs) {
-        int parent = 0;
+        int parent = 1;
         for (final Pair<Integer, Integer> childNodePair : childNodePairs) {
             // 0 is leaf (White) and 1 is root
-            final int leftNode = childNodePair.getKey() - 1;
-            final int rightNode = childNodePair.getValue() - 1;
+            final int leftNode = childNodePair.getKey();
+            final int rightNode = childNodePair.getValue();
             dprinf("parent=%d, leftNode=%d, rightNode=%d%n", parent, leftNode, rightNode);
-            if (leftNode != -1) {
-                multiplierMatrix[leftNode][parent] += 1;
-            }
-            if (rightNode != -1) {
-                multiplierMatrix[rightNode][parent] += 1;
-            }
+            multiplierMatrix[leftNode][parent] += 1;
+            multiplierMatrix[rightNode][parent] += 1;
             parent++;
         }
     }
