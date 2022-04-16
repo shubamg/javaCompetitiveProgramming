@@ -58,7 +58,7 @@ public class MatrixCalculator {
         return result;
     }
 
-    final long[][] multiply(final long[][] A, final long[][] B) {
+    public final long[][] multiply(final long[][] A, final long[][] B) {
         doMultiplicationPrechecks(A, B);
         final long[][] result = new long[A.length][B[0].length];
         for (int i = 0; i < result.length; i++) {

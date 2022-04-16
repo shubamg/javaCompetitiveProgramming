@@ -10,9 +10,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Created by Shubham Gupta
@@ -27,7 +28,7 @@ public class InfiniTree {
     final long[] initState;
     final MatrixCalculator matrixCalculator;
     private final Calculator calculator;
-    private final Map<Long, long[][]> expo2Matrix = new HashMap<>();
+    private final NavigableMap<Long, long[][]> expo2Matrix = new TreeMap<>();
 
     public InfiniTree(final int n, final long a, final long b, final List<Pair<Integer, Integer>> childNodePairs) {
         assert a == 1;
@@ -66,12 +67,23 @@ public class InfiniTree {
     }
 
     private long[][] getMatrixPowerFromCache(final long middle) {
-        return expo2Matrix.computeIfAbsent(middle, k -> matrixCalculator.power(multiplierMatrix, middle));
+        final Map.Entry<Long, long[][]> floorEntry = expo2Matrix.floorEntry(middle);
+        final long floorKey = floorEntry.getKey();
+        final long[][] floorPower = floorEntry.getValue();
+        if (floorKey == middle) {
+            return floorPower;
+        }
+        final long diffKey = middle - floorKey;
+        final long[][] diffPow = getMatrixPowerFromCache(diffKey);
+        final long[][] result = matrixCalculator.multiply(floorPower, diffPow);
+        expo2Matrix.put(middle, result);
+        return result;
     }
 
     private long getUpperLimit() {
         long[][] matrixPower = multiplierMatrix;
         long expo = 1;
+        expo2Matrix.computeIfAbsent(expo, k -> multiplierMatrix);
         while(true) {
             final long total = getTotal(matrixPower);
             dprinf("expo = %d, total = %d, matrix=%s%n", expo, total, Arrays.deepToString(matrixPower));
