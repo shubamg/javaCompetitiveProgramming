@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Shubham Gupta
@@ -26,6 +28,7 @@ public class InfiniTree {
     final long[] initState;
     final MatrixCalculator matrixCalculator;
     private final Calculator calculator;
+    private final Map<Long, long[][]> expo2Matrix = new HashMap<>();
 
     public InfiniTree(final int n, final long a, final long b, final List<Pair<Integer, Integer>> childNodePairs) {
         assert a == 1;
@@ -72,8 +75,9 @@ public class InfiniTree {
             if (total >= B) {
                 break;
             }
-            matrixPower = matrixCalculator.power(matrixPower, 2);
+            final long[][] finalMatrixPower = matrixPower;
             expo *= 2;
+            matrixPower = expo2Matrix.computeIfAbsent(expo, k -> matrixCalculator.power(finalMatrixPower, 2));
         }
         return expo;
     }
