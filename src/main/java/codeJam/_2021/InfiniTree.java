@@ -1,9 +1,13 @@
 package codeJam._2021;
 
+import io.InputReader;
 import math.MatrixCalculator;
 import math.ModuloCalculator;
 import util.Pair;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +34,7 @@ public class InfiniTree {
         matrixCalculator = new MatrixCalculator(ModuloCalculator.getWithoutMod());
     }
 
-    long solve() {
+    private long solve() {
         final long upperBoundOnExpo = getUpperLimit();
         final long resultExpo = binSearch(upperBoundOnExpo);
         return resultExpo - 1;
@@ -99,5 +103,35 @@ public class InfiniTree {
             multiplierMatrix[rightNode][parent] += 1;
             parent++;
         }
+    }
+
+    public static void main(final String[] args) {
+        final InputReader reader = new InputReader(new BufferedReader(new InputStreamReader(System.in)));
+        final int T = reader.nextInt();
+        for (int caseNo = 1; caseNo <= T; caseNo++) {
+            final InfiniTree infiniTree = solveCase(reader);
+            final long answer = infiniTree.solve();
+            System.out.printf("Case #%d: %d%n", caseNo, answer);
+        }
+    }
+
+    private static InfiniTree solveCase(final InputReader reader) {
+        final int N = reader.nextInt();
+        final long A = reader.nextLong();
+        final long B = reader.nextLong();
+        final int[] leftChildren = new int[N];
+        final int[] rightChildren = new int[N];
+        for (int i = 0; i < N; i++) {
+            leftChildren[i] = reader.nextInt();
+        }
+        for (int i = 0; i < N; i++) {
+            rightChildren[i] = reader.nextInt();
+        }
+
+        final List<Pair<Integer, Integer>> parent2Children = new ArrayList<>(N);
+        for (int i = 0; i < N; i++) {
+            parent2Children.add(new Pair<>(leftChildren[i], rightChildren[i]));
+        }
+        return new InfiniTree(N, A, B, parent2Children);
     }
 }
