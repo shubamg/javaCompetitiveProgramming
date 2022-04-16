@@ -1,6 +1,8 @@
 package codeJam._2021;
 
 import io.InputReader;
+import math.Calculator;
+import math.CappedCalculator;
 import math.MatrixCalculator;
 import math.ModuloCalculator;
 import util.Pair;
@@ -23,7 +25,7 @@ public class InfiniTree {
     final long[][] multiplierMatrix;
     final long[] initState;
     final MatrixCalculator matrixCalculator;
-    private final ModuloCalculator moduloCalculator;
+    private final Calculator calculator;
 
     public InfiniTree(final int n, final long a, final long b, final List<Pair<Integer, Integer>> childNodePairs) {
         assert a == 1;
@@ -34,8 +36,8 @@ public class InfiniTree {
         this.initState = new long[2 * (N + 1)];
         populateMultiplierMatrix(childNodePairs);
         populateInitState();
-        moduloCalculator = ModuloCalculator.getWithoutMod();
-        matrixCalculator = new MatrixCalculator(moduloCalculator);
+        calculator = new CappedCalculator();
+        matrixCalculator = new MatrixCalculator(calculator);
     }
 
     private long solve() {
@@ -79,7 +81,7 @@ public class InfiniTree {
     private long getTotal(final long[][] matrixPower) {
         long sum = 0L;
         for (int i = 0; i <= N; i++) {
-            sum = moduloCalculator.add(sum, matrixPower[i + (N + 1)][1]);
+            sum = calculator.add(sum, matrixPower[i + (N + 1)][1]);
         }
         return sum;
     }
