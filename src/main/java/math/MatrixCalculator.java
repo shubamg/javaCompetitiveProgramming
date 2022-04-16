@@ -87,4 +87,14 @@ public class MatrixCalculator {
         }
         return partialResult;
     }
+
+    public static long[][] getZeroMatrix(final int size) {
+        final long[][] matrix = new long[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrix[i][j] = 0L;
+            }
+        }
+        return matrix;
+    }
 }
