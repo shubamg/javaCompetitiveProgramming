@@ -8,6 +8,7 @@ import util.Pair;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
  * on 15 Apr 2022.
  */
 public class InfiniTree {
+    private static final boolean DEBUG = true;
     final int N;
     final long A;
     final long B;
@@ -35,7 +37,9 @@ public class InfiniTree {
     }
 
     private long solve() {
+        dprinf("Multiplier matrix %s%n", Arrays.deepToString(multiplierMatrix));
         final long upperBoundOnExpo = getUpperLimit();
+        dprinf("Upperlimit = %d%n", upperBoundOnExpo);
         final long resultExpo = binSearch(upperBoundOnExpo);
         return resultExpo - 1;
     }
@@ -58,7 +62,12 @@ public class InfiniTree {
     private long getUpperLimit() {
         long[][] matrixPower = multiplierMatrix;
         long expo = 1;
-        while(getTotal(matrixPower) < B) {
+        while(true) {
+            final long total = getTotal(matrixPower);
+            dprinf("expo = %d, total = %d, matrix=%s%n", expo, total, Arrays.deepToString(matrixPower));
+            if (total >= B) {
+                break;
+            }
             matrixPower = matrixCalculator.power(matrixPower, 2);
             expo *= 2;
         }
@@ -99,6 +108,7 @@ public class InfiniTree {
             // 0 is leaf (White) and 1 is root
             final int leftNode = childNodePair.getKey() - 1;
             final int rightNode = childNodePair.getValue() - 1;
+            dprinf("parent=%d, leftNode=%d, rightNode=%d%n", parent, leftNode, rightNode);
             if (leftNode != -1) {
                 multiplierMatrix[leftNode][parent] += 1;
             }
@@ -116,6 +126,12 @@ public class InfiniTree {
             final InfiniTree infiniTree = solveCase(reader);
             final long answer = infiniTree.solve();
             System.out.printf("Case #%d: %d%n", caseNo, answer);
+        }
+    }
+
+    private static void dprinf(String format, Object ... args) {
+        if (DEBUG) {
+            System.out.printf(format, args);
         }
     }
 
