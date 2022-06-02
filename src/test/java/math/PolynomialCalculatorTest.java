@@ -62,4 +62,13 @@ public class PolynomialCalculatorTest {
         final long[] actualResult = calculator.integrate(integrand, lowerLimit, upperLimit);
         Assert.assertArrayEquals(new long[]{3, 4, 3}, actualResult);
     }
+
+    @Test
+    public void lagarangeInterpolation() {
+        final long[] x = {0, 1, 2};
+        final long[] y = {0, 2, 4}; // y = x^2
+        final PolynomialCalculator calculator = new PolynomialCalculator(ModuloCalculator.getWithoutMod());
+        final long[] actualResult = calculator.lagarangeInterpolation(x, y);
+        Assert.assertArrayEquals(new long[]{1, 0, 0}, actualResult);
+    }
 }

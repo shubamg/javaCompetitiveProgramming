@@ -145,6 +145,11 @@ public class PolynomialCalculator {
         return subtract(substitute(indefiniteIntegral, upperLimit), substitute(indefiniteIntegral, lowerLimit));
     }
 
+    public long[] lagarangeInterpolation(final long[] x, final long[] y) {
+        assert x.length == y.length;
+        return null;
+    }
+
     public static long[] getZeroPolynomial() {
         return ZERO_POLYNOMIAL;
     }
