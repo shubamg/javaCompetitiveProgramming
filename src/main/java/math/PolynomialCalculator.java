@@ -145,7 +145,7 @@ public class PolynomialCalculator {
         return subtract(substitute(indefiniteIntegral, upperLimit), substitute(indefiniteIntegral, lowerLimit));
     }
 
-    public long[] lagarangeInterpolation(final long[] x, final long[] y) {
+    public long[] doLagarangeInterpolation(final long[] x, final long[] y) {
         assert x.length == y.length;
         return null;
     }
