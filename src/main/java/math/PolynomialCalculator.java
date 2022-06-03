@@ -148,22 +148,23 @@ public class PolynomialCalculator {
 
     public long[] doLagarangeInterpolation(final long[] x, final long[] y) {
         assert x.length == y.length;
-        final int degree = x.length - 1;
-        final long[] result = new long[degree + 1];
-        for (int i = 0; i < x.length; i++) {
-            final int finalI = i;
-            extracted(x, y, finalI);
-        }
-
+       return IntStream.range(0, x.length).mapToObj(i -> multiply(getIthBase(x, i), y[i])).reduce(this::add).get();
     }
 
-    private void extracted(final long[] x, final long[] y, final int excludedIndex) {
-        final IntStream indexes = IntStream.range(0, x.length).filter(j -> j != excludedIndex);
-        final long[] numerator = indexes.mapToObj(j -> new long[]{1, -x[j]}).reduce(this::multiply).get();
-        final long denominator = indexes.mapToLong(j -> moduloCalculator.subtract(x[excludedIndex], x[j]))
-                                        .reduce((a, b) -> moduloCalculator.multiply(a, b))
-                                        .getAsLong();
-        final long[] polynomial = multiply(multiply(numerator, y[excludedIndex]), moduloCalculator.getInverse(denominator));
+    private long[] getIthBase(final long[] x, final int excludedIndex) {
+        final long[] numerator = IntStream.range(0, x.length).filter(j11 -> j11 != excludedIndex)
+                                          .mapToObj(j -> new long[]{1, -x[j]}).reduce(this::multiply).get();
+        final long denominator = IntStream.range(0, x.length).filter(j1 -> j1 != excludedIndex)
+                                          .mapToLong(j -> moduloCalculator.subtract(x[excludedIndex], x[j]))
+                                          .reduce((a, b) -> moduloCalculator.multiply(a, b))
+                                          .getAsLong();
+        final long[] multiply = multiply(numerator, moduloCalculator.getInverse(denominator));
+        System.out.printf("ExcludedIndex=%d, numerator=%s, denominator=%s, result=%s%n",
+                          excludedIndex,
+                          Arrays.toString(numerator),
+                          denominator,
+                          Arrays.toString(multiply));
+        return multiply;
     }
 
     public static long[] getZeroPolynomial() {

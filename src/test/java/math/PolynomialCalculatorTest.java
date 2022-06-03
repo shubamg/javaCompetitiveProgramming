@@ -3,6 +3,8 @@ package math;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class PolynomialCalculatorTest {
 
     @Test
@@ -66,9 +68,10 @@ public class PolynomialCalculatorTest {
     @Test
     public void lagarangeInterpolation() {
         final long[] x = {0, 1, 2};
-        final long[] y = {0, 2, 4}; // y = x^2
-        final PolynomialCalculator calculator = new PolynomialCalculator(ModuloCalculator.getWithoutMod());
+        final long[] y = {0, 1, 4}; // y = x^2
+        final PolynomialCalculator calculator = new PolynomialCalculator(new ModuloCalculator(1_000_000_007));
         final long[] actualResult = calculator.doLagarangeInterpolation(x, y);
+        System.out.println(Arrays.toString(actualResult));
         Assert.assertArrayEquals(new long[]{1, 0, 0}, actualResult);
     }
 }
