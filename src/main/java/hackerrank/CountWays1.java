@@ -20,6 +20,7 @@ public class CountWays1 {
     }
 
     private int getL(final List<Integer> arr) {
+        assert arr.size() > 0;
         return new HashSet<>(arr).stream().mapToInt(e -> e).reduce((a, b) -> a * b).getAsInt();
     }
 }
