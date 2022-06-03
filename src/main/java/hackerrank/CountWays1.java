@@ -8,10 +8,10 @@ import java.util.List;
  * on 03 Jun 2022.
  */
 public class CountWays1 {
-    private final int L;
+    private final int commonMultiple;
 
-    private CountWays1(final int l) {
-        L = l;
+    private CountWays1(final int commonMultiple) {
+        this.commonMultiple = commonMultiple;
     }
 
     public static int countWays(List<Integer> arr, long l, long r) {
@@ -19,7 +19,7 @@ public class CountWays1 {
 
     }
 
-    private int getL(final List<Integer> arr) {
+    private int getCommonMultiple(final List<Integer> arr) {
         assert arr.size() > 0;
         return new HashSet<>(arr).stream().mapToInt(e -> e).reduce((a, b) -> a * b).getAsInt();
     }
