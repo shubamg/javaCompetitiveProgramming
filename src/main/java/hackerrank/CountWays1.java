@@ -1,8 +1,8 @@
 package hackerrank;
 
 import com.google.common.collect.Lists;
+import math.InterpolatedPolyEvaluator;
 import math.ModuloCalculator;
-import math.PolynomialCalculator;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,20 +22,17 @@ public class CountWays1 {
     private final int D;
     private final int maxDpAmount;
     private final ModuloCalculator moduloCalculator;
-    private final PolynomialCalculator polynomialCalculator;
 
     private CountWays1(final List<Integer> coins,
-                   final int commonMultiple,
-                   final long l,
-                   final long r,
-                   final ModuloCalculator moduloCalculator,
-                   final PolynomialCalculator polynomialCalculator) {
+                       final int commonMultiple,
+                       final long l,
+                       final long r,
+                       final ModuloCalculator moduloCalculator) {
         this.commonMultiple = commonMultiple;
         this.coins = coins;
         this.l = l;
         this.r = r;
         this.D = coins.size();
-        this.polynomialCalculator = polynomialCalculator;
         this.maxDpAmount = this.commonMultiple * (this.D + 1);
         this.moduloCalculator = moduloCalculator;
         printf("commonMultiple=%d, coins=%s, l=%d, r=%d, D=%d%n", commonMultiple, coins, l, r, D);
@@ -56,29 +53,21 @@ public class CountWays1 {
     }
 
     private long getReminderContribution(final long[] dpState, final int reminder) {
-        final long[] y = getYForInterpolation(dpState, reminder);
-        final long[] q = LongStream.range(0, D + 1L).toArray();
-        final long[] poly = polynomialCalculator.doLagarangeInterpolation(q, y);
         /*
         commonMultiple * higherQIncl + reminder <= r
         higherQIncl <= (r - reminder) / commonMultiple
         */
         final long higherQIncl = (r - reminder) / commonMultiple;
+        final long[] y = getYForInterpolation(dpState, reminder);
+        final long[] q = LongStream.range(0, D + 1L).toArray();
         if (l - reminder - 1 < 0) {
-            printf("For reminder %d, sumPoly=%s, lowerQExcl is -ve, higherQIncl=%d%n",
-                   reminder,
-                   Arrays.toString(poly),
-                   higherQIncl);
-            return polynomialCalculator.evaluateAt(poly, higherQIncl);
+            printf("For reminder %d, lowerQExcl is -ve, higherQIncl=%d%n", reminder, higherQIncl);
+            return new InterpolatedPolyEvaluator(q, y, higherQIncl, moduloCalculator).evaluate();
         }
         final long lowerQExcl = (l - reminder - 1) / commonMultiple;
-        printf("For reminder %d, sumPoly=%s, lowerQExcl=%d, higherQIncl=%d%n",
-               reminder,
-               Arrays.toString(poly),
-               lowerQExcl,
-               higherQIncl);
-        final long higherInclEval = polynomialCalculator.evaluateAt(poly, higherQIncl);
-        final long lowerExclEval = polynomialCalculator.evaluateAt(poly, lowerQExcl);
+        printf("For reminder %d, lowerQExcl=%d, higherQIncl=%d%n", reminder, lowerQExcl, higherQIncl);
+        final long higherInclEval = new InterpolatedPolyEvaluator(q, y, higherQIncl, moduloCalculator).evaluate();
+        final long lowerExclEval = new InterpolatedPolyEvaluator(q, y, lowerQExcl, moduloCalculator).evaluate();
         return moduloCalculator.subtract(higherInclEval, lowerExclEval);
     }
 
@@ -118,8 +107,7 @@ public class CountWays1 {
 
     public static int countWays(List<Integer> arr, long l, long r) {
         final ModuloCalculator moduloCalculator = new ModuloCalculator(1_000_000_007L);
-        final PolynomialCalculator polynomialCalculator = new PolynomialCalculator(moduloCalculator);
-        final CountWays1 solver = new CountWays1(arr, getCommonMultiple(arr), l, r, moduloCalculator, polynomialCalculator);
+        final CountWays1 solver = new CountWays1(arr, getCommonMultiple(arr), l, r, moduloCalculator);
         return (int) solver.solve();
     }
 
