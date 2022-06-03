@@ -3,6 +3,7 @@ package math;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Assumes polynomial as an array of coefficients
@@ -147,7 +148,22 @@ public class PolynomialCalculator {
 
     public long[] doLagarangeInterpolation(final long[] x, final long[] y) {
         assert x.length == y.length;
-        return null;
+        final int degree = x.length - 1;
+        final long[] result = new long[degree + 1];
+        for (int i = 0; i < x.length; i++) {
+            final int finalI = i;
+            extracted(x, y, finalI);
+        }
+
+    }
+
+    private void extracted(final long[] x, final long[] y, final int excludedIndex) {
+        final IntStream indexes = IntStream.range(0, x.length).filter(j -> j != excludedIndex);
+        final long[] numerator = indexes.mapToObj(j -> new long[]{1, -x[j]}).reduce(this::multiply).get();
+        final long denominator = indexes.mapToLong(j -> moduloCalculator.subtract(x[excludedIndex], x[j]))
+                                        .reduce((a, b) -> moduloCalculator.multiply(a, b))
+                                        .getAsLong();
+        final long[] polynomial = multiply(multiply(numerator, y[excludedIndex]), moduloCalculator.getInverse(denominator));
     }
 
     public static long[] getZeroPolynomial() {
