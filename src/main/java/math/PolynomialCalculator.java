@@ -158,13 +158,7 @@ public class PolynomialCalculator {
                                           .mapToLong(j -> moduloCalculator.subtract(x[excludedIndex], x[j]))
                                           .reduce((a, b) -> moduloCalculator.multiply(a, b))
                                           .getAsLong();
-        final long[] multiply = multiply(numerator, moduloCalculator.getInverse(denominator));
-        System.out.printf("ExcludedIndex=%d, numerator=%s, denominator=%s, result=%s%n",
-                          excludedIndex,
-                          Arrays.toString(numerator),
-                          denominator,
-                          Arrays.toString(multiply));
-        return multiply;
+        return multiply(numerator, moduloCalculator.getInverse(denominator));
     }
 
     public static long[] getZeroPolynomial() {
