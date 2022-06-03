@@ -7,12 +7,14 @@ import math.PolynomialCalculator;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.LongStream;
 
 /**
  * Created by Shubham Gupta
  * on 03 Jun 2022.
  */
 public class CountWays1 {
+    private static final boolean DEBUG = true;
     private final int commonMultiple;
     private final List<Integer> coins;
     private final long l;
@@ -23,10 +25,11 @@ public class CountWays1 {
     private final PolynomialCalculator polynomialCalculator;
 
     private CountWays1(final List<Integer> coins,
-                       final int commonMultiple,
-                       final long l,
-                       final long r,
-                       final ModuloCalculator moduloCalculator, final PolynomialCalculator polynomialCalculator) {
+                   final int commonMultiple,
+                   final long l,
+                   final long r,
+                   final ModuloCalculator moduloCalculator,
+                   final PolynomialCalculator polynomialCalculator) {
         this.commonMultiple = commonMultiple;
         this.coins = coins;
         this.l = l;
@@ -35,47 +38,61 @@ public class CountWays1 {
         this.polynomialCalculator = polynomialCalculator;
         this.maxDpAmount = this.commonMultiple * (this.D + 1);
         this.moduloCalculator = moduloCalculator;
+        printf("commonMultiple=%d, coins=%s, l=%d, r=%d, D=%d%n", commonMultiple, coins, l, r, D);
     }
 
     private long solve() {
-        final long[] dpState = getFinalDpState();
+        final long[] dpState = getDpState();
+        for (int i = 0; i < maxDpAmount; i++) {
+            printf("%d -> %d%n", i, dpState[i]);
+        }
         long runningSum = 0L;
         for (int reminder = 0; reminder < commonMultiple; reminder++) {
             final long reminderContribution = getReminderContribution(dpState, reminder);
+            printf("For reminder=%d, contribution=%d%n", reminder, reminderContribution);
             runningSum = moduloCalculator.add(runningSum, reminderContribution);
         }
         return runningSum;
     }
 
     private long getReminderContribution(final long[] dpState, final int reminder) {
-        final long[] poly = getSumPoly(dpState, reminder);
+        final long[] y = getYForInterpolation(dpState, reminder);
+        final long[] q = LongStream.range(0, D + 1L).toArray();
+        final long[] poly = polynomialCalculator.doLagarangeInterpolation(q, y);
         /*
         commonMultiple * higherQIncl + reminder <= r
         higherQIncl <= (r - reminder) / commonMultiple
-         */
+        */
         final long higherQIncl = (r - reminder) / commonMultiple;
-        final long lowerQExcl = ((l - reminder) / commonMultiple) - 1;
-        if (lowerQExcl < 0) {
+        if (l - reminder - 1 < 0) {
+            printf("For reminder %d, sumPoly=%s, lowerQExcl is -ve, higherQIncl=%d%n",
+                   reminder,
+                   Arrays.toString(poly),
+                   higherQIncl);
             return polynomialCalculator.evaluateAt(poly, higherQIncl);
-        } else {
-            final long higherInclEval = polynomialCalculator.evaluateAt(poly, higherQIncl);
-            final long lowerExclEval = polynomialCalculator.evaluateAt(poly, lowerQExcl);
-            return moduloCalculator.subtract(higherInclEval, lowerExclEval);
         }
+        final long lowerQExcl = (l - reminder - 1) / commonMultiple;
+        printf("For reminder %d, sumPoly=%s, lowerQExcl=%d, higherQIncl=%d%n",
+               reminder,
+               Arrays.toString(poly),
+               lowerQExcl,
+               higherQIncl);
+        final long higherInclEval = polynomialCalculator.evaluateAt(poly, higherQIncl);
+        final long lowerExclEval = polynomialCalculator.evaluateAt(poly, lowerQExcl);
+        return moduloCalculator.subtract(higherInclEval, lowerExclEval);
     }
 
-    private long[] getSumPoly(final long[] dpState, final int reminder) {
-        final long[] x = new long[D + 1];
+    private long[] getYForInterpolation(final long[] dpState, final int reminder) {
         final long[] y = new long[D + 1];
-        for (int q = 0; q <= D; q++) {
-            x[q] = q;
-            final int denomination = q * commonMultiple + reminder;
-            y[q] = dpState[denomination];
+        y[0] = dpState[reminder];
+        for (int q = 1; q <= D; q++) {
+            final int index = q * commonMultiple + reminder;
+            y[q] = moduloCalculator.add(dpState[index], y[q - 1]);
         }
-        return polynomialCalculator.doLagarangeInterpolation(x, y);
+        return y;
     }
 
-    private long[] getFinalDpState() {
+    private long[] getDpState() {
         long[] state = getInitDpState();
         for (int i = 0; i < D; i++) {
             state = getNextDpState(coins.get(i), state);
@@ -109,6 +126,12 @@ public class CountWays1 {
     private static int getCommonMultiple(final List<Integer> arr) {
         assert arr.size() > 0;
         return new HashSet<>(arr).stream().mapToInt(e -> e).reduce((a, b) -> a * b).getAsInt();
+    }
+
+    private void printf(String format, Object... args) {
+        if (DEBUG) {
+            System.out.printf(format, args);
+        }
     }
 
     public static void main(String[] args) {
