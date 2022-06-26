@@ -7,6 +7,9 @@ import java.util.TreeMap;
 
 public class ZigZag {
     public int longestZigZag(final int[] sequence) {
+        if (sequence.length == 0) {
+            return 0;
+        }
         final SortedMap<Integer, Integer> lastElem2NumDecSeq = new TreeMap<>();
         final SortedMap<Integer, Integer> lastElem2NumIncSeq = new TreeMap<>(Comparator.<Integer>naturalOrder().reversed());
         for (final int x : sequence) {
