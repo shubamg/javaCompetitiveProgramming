@@ -6,7 +6,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class ZigZag {
-    public int longestZigZag(int[] sequence) {
+    public int longestZigZag(final int[] sequence) {
         final SortedMap<Integer, Integer> lastElem2NumDecSeq = new TreeMap<>();
         final SortedMap<Integer, Integer> lastElem2NumIncSeq = new TreeMap<>(Comparator.<Integer>naturalOrder().reversed());
         for (final int x : sequence) {
@@ -15,7 +15,9 @@ public class ZigZag {
             lastElem2NumDecSeq.compute(x, (_k, oldV) -> oldV == null ? decSeqEndingAtX : decSeqEndingAtX + oldV);
             lastElem2NumIncSeq.compute(x, (_k, oldV) -> oldV == null ? incSeqEndingAtX : incSeqEndingAtX + oldV);
         }
-        return 1;
+        final int longestDecSeq = lastElem2NumDecSeq.values().stream().mapToInt(e -> e).max().getAsInt();
+        final int longestIncSeq = lastElem2NumIncSeq.values().stream().mapToInt(e -> e).max().getAsInt();
+        return Math.max(longestDecSeq, longestIncSeq);
     }
 
     private int getIncSeqEndingAtX(final SortedMap<Integer, Integer> lastElem2NumDecSeq, final int x) {
