@@ -6,17 +6,25 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class ZigZag {
+
+    public static void main(String[] args) {
+        final ZigZag solver = new ZigZag();
+        System.out.println(solver.longestZigZag(new int[]{1, 7, 4, 9, 2, 5}));
+    }
+
     public int longestZigZag(final int[] sequence) {
         if (sequence.length == 0) {
             return 0;
         }
         final SortedMap<Integer, Integer> lastElem2NumDecSeq = new TreeMap<>();
-        final SortedMap<Integer, Integer> lastElem2NumIncSeq = new TreeMap<>(Comparator.<Integer>naturalOrder().reversed());
+        final SortedMap<Integer, Integer> lastElem2NumIncSeq = new TreeMap<>(Comparator.<Integer>naturalOrder()
+                                                                                       .reversed());
         for (final int x : sequence) {
             final int decSeqEndingAtX = getDecSeqEndingAtX(lastElem2NumIncSeq, x);
             final int incSeqEndingAtX = getIncSeqEndingAtX(lastElem2NumDecSeq, x);
             lastElem2NumDecSeq.compute(x, (_k, oldV) -> oldV == null ? decSeqEndingAtX : decSeqEndingAtX + oldV);
             lastElem2NumIncSeq.compute(x, (_k, oldV) -> oldV == null ? incSeqEndingAtX : incSeqEndingAtX + oldV);
+            System.out.printf("%d%ndec: %s%ninc: %s%n%n", x, lastElem2NumDecSeq, lastElem2NumIncSeq);
         }
         final int longestDecSeq = lastElem2NumDecSeq.values().stream().mapToInt(e -> e).max().getAsInt();
         final int longestIncSeq = lastElem2NumIncSeq.values().stream().mapToInt(e -> e).max().getAsInt();
