@@ -21,7 +21,7 @@ public class ZigZag {
     }
 
     private int getIncSeqEndingAtX(final SortedMap<Integer, Integer> lastElem2NumDecSeq, final int x) {
-        int incSeqEndingAtX = 0;
+        int incSeqEndingAtX = 1;
         for (final Map.Entry<Integer, Integer> entry : lastElem2NumDecSeq.entrySet()) {
             final int lastElement = entry.getKey();
             if (lastElement < x) {
@@ -34,7 +34,7 @@ public class ZigZag {
     }
 
     private int getDecSeqEndingAtX(final SortedMap<Integer, Integer> lastElem2NumIncSeq, final int x) {
-        int decSeqEndingAtX = 0;
+        int decSeqEndingAtX = 1;
         for (final Map.Entry<Integer, Integer> entry : lastElem2NumIncSeq.entrySet()) {
             final int lastElement = entry.getKey();
             if (lastElement > x) {
