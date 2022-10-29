@@ -3,7 +3,9 @@ package topcoder;
 public class BadNeighbors {
 
     public static void main(String[] args) {
-        System.out.println(new BadNeighbors().maxDonations(new int[] {94, 40, 49, 65, 21, 21, 106, 80, 92, 81, 679, 4, 61, 6, 237, 12, 72, 74, 29, 95, 265, 35, 47, 1, 61, 397, 52, 72, 37, 51, 1, 81, 45, 435, 7, 36, 57, 86, 81, 72}));
+        System.out.println(new BadNeighbors().maxDonations(new int[]{94, 40, 49, 65, 21, 21, 106, 80, 92, 81, 679, 4,
+                61, 6, 237, 12, 72, 74, 29, 95, 265, 35, 47, 1, 61, 397, 52, 72, 37, 51, 1, 81, 45, 435, 7, 36, 57,
+                86, 81, 72}));
     }
 
     public int maxDonations(int[] donations) {
@@ -29,7 +31,7 @@ public class BadNeighbors {
         maxDonationsIOnwards[n - 1] = donations[n - 1];
 
         maxDonationIOnwardsExcludingLast[n - 2] = donations[n - 2];
-        maxDonationsIOnwards[n - 2] = Math.max(donations[n - 2], maxDonationsIOnwards[ n - 1]);
+        maxDonationsIOnwards[n - 2] = Math.max(donations[n - 2], maxDonationsIOnwards[n - 1]);
 
         for (int i = n - 3; i >= 0; i--) {
             maxDonationIOnwardsExcludingLast[i] = Math.max(maxDonationIOnwardsExcludingLast[i + 2] + donations[i],
