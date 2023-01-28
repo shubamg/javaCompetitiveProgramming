@@ -1,10 +1,10 @@
 package hackerrank;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -14,44 +14,55 @@ import java.util.stream.Collectors;
 public class DeciBinarySolver {
 
     private final int deciBinariesNeeded;
-    private final List<DeciBinary> deciWithDeciBinaries;
+    private final Map<Integer, List<DeciBinary>> decimal2DeciBinaries;
+    private int totalDeciBinariesGenerated;
 
     private DeciBinarySolver(final int deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        deciWithDeciBinaries = new ArrayList<>(deciBinariesNeeded);
+        decimal2DeciBinaries = new TreeMap<>();
+        initBaseCase();
+        totalDeciBinariesGenerated = 0;
     }
 
-    private static Set<DeciBinary> getAllDeciBinaryForDeci(final int deci) {
-        final Set<DeciBinary> ret = new HashSet<>();
-        if (deci == 0) {
-            ret.add(new DeciBinary(0, 0));
-            return ret;
+    private void initBaseCase() {
+        storeNewDeciBinaries(0, Collections.singletonList(new DeciBinary(0, 0L)));
+    }
+
+    private List<DeciBinary> computeDeciBinariesIfAbsent(final int deci) {
+        if (!decimal2DeciBinaries.containsKey(deci)) {
+            storeNewDeciBinaries(deci, computeDeciBinariesFor(deci));
         }
+        return decimal2DeciBinaries.get(deci);
+    }
+
+    private void storeNewDeciBinaries(final int deci, final List<DeciBinary> computedDeciBinaries) {
+        decimal2DeciBinaries.put(deci, computedDeciBinaries);
+        totalDeciBinariesGenerated += computedDeciBinaries.size();
+    }
+
+    private List<DeciBinary> computeDeciBinariesFor(final int deci) {
+        final List<DeciBinary> ret = new ArrayList<>();
         final int mod2 = deci % 2;
-        for (int unitDigit = mod2; unitDigit <= Math.min(9, deci); unitDigit+=2) {
-            ret.addAll(getDeciBinariesWithUnitDigit(deci, unitDigit));
+        for (int unitDigit = mod2; unitDigit <= Math.min(9, deci); unitDigit += 2) {
+            final List<DeciBinary> deciBinariesWithUnitDigit = getDeciBinariesWithUnitDigit(deci, unitDigit);
+            Collections.sort(deciBinariesWithUnitDigit);
+            ret.addAll(deciBinariesWithUnitDigit);
         }
         return ret;
     }
 
-    private static Set<DeciBinary> getDeciBinariesWithUnitDigit(final int deci, final int unitDigit) {
-        final Set<DeciBinary> deciBinariesWithoutUnitDigit = getAllDeciBinaryForDeci((deci - unitDigit) / 2);
-        return deciBinariesWithoutUnitDigit.stream().map(db -> db.appendUnitDigit(unitDigit)).collect(Collectors.toSet());
+    private List<DeciBinary> getDeciBinariesWithUnitDigit(final int deci, final int unitDigit) {
+        final List<DeciBinary> deciBinariesWithoutUnitDigit = computeDeciBinariesIfAbsent((deci - unitDigit) / 2);
+        return deciBinariesWithoutUnitDigit.stream().map(db -> db.appendUnitDigit(unitDigit))
+                                           .collect(Collectors.toList());
     }
 
     private void generateDeciBinaries() {
         int currDeci = 0;
-        while (deciWithDeciBinaries.size() < deciBinariesNeeded) {
-            deciWithDeciBinaries.addAll(getAllDeciBinaryForDeci(currDeci));
+        while (totalDeciBinariesGenerated < deciBinariesNeeded) {
+            computeDeciBinariesIfAbsent(currDeci);
             currDeci++;
         }
-        sort();
-    }
-
-    private void sort() {
-        final Comparator<DeciBinary> comparator =
-                Comparator.comparingInt(DeciBinary::decimal).thenComparingLong(DeciBinary::repr);
-        deciWithDeciBinaries.sort(comparator);
     }
 
     public static void main(final String[] args) {
@@ -60,11 +71,10 @@ public class DeciBinarySolver {
         final long startNanos = System.nanoTime();
         solver.generateDeciBinaries();
         final long durationNanos = System.nanoTime() - startNanos;
-        System.out.println(solver.deciWithDeciBinaries.subList(0, 100));
         System.out.printf("Time taken = %d nanos%n", durationNanos);
     }
 
-    private static class DeciBinary {
+    private static class DeciBinary implements Comparable<DeciBinary> {
         private final int decimal;
         private final long repr;
 
@@ -114,10 +124,13 @@ public class DeciBinarySolver {
 
         @Override
         public String toString() {
-            return "DeciBinary{" +
-                    "decimal=" + decimal +
-                    ", repr=" + repr +
-                    '}';
+            return "DeciBinary{" + "decimal=" + decimal + ", repr=" + repr + '}';
+        }
+
+        @Override
+        public int compareTo(final DeciBinary other) {
+            final int compareDecimal = Integer.compare(this.decimal(), other.decimal());
+            return compareDecimal != 0 ? compareDecimal : Long.compare(this.repr(), other.repr());
         }
     }
 }
