@@ -37,7 +37,7 @@ public class DeciBinaryCacheTest {
 
     @Test
     public void countOfDeciBinaries() {
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(20);
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(100);
         final List<Integer> twoDigitDeciBinariesFor8 = Lists.newArrayList(16, 24, 32, 40);
         Assert.assertEquals(twoDigitDeciBinariesFor8.size(), cache.getCountFor(new DecimalToDeciBinary.Key(8, 2)));
     }

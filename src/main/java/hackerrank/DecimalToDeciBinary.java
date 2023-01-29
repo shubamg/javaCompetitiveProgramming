@@ -24,9 +24,62 @@ public class DecimalToDeciBinary {
         generateDeciBinaries();
     }
 
+    long getCountFor(final Key key) {
+        return decimal2CountOfDeciB.get(key);
+    }
+
     private void initBaseCase() {
-        decimal2CountOfDeciB.put(new Key(0, 0), 0L);
+        decimal2CountOfDeciB.put(new Key(0, 0), 1L);
         totalGenerated++;
+    }
+
+    private void generateDeciBinaries() {
+        initBaseCase();
+        int currDeci = 1;
+        while (totalGenerated < deciBinariesNeeded) {
+            processAllKeysFor(currDeci);
+            currDeci++;
+        }
+    }
+
+    private void processAllKeysFor(final int decimal) {
+        final int[] allowedNumDigits = getAllowedNumDigits(decimal);
+        for (final int numDigits : allowedNumDigits) {
+            processKey(new Key(decimal, numDigits));
+        }
+    }
+
+    private void processKey(final Key key) {
+        final long numDeciBinaries = computeNumDeciBinaries(key);
+        if (numDeciBinaries != 0) {
+            decimal2CountOfDeciB.put(key, numDeciBinaries);
+            totalGenerated += numDeciBinaries;
+        }
+    }
+
+    private long computeNumDeciBinaries(final Key key) {
+        final int decimal = key.getDecimal();
+        final int numDigits = key.getNumDigits();
+        final int numDigitsInPrefix = numDigits - 1;
+        long numDeciBinaries = 0;
+        final int mod2 = decimal % 2;
+        for (int unitDigit = mod2; unitDigit <= Math.min(9, decimal); unitDigit += 2) {
+            final int prefixDecimal = (decimal - unitDigit) / 2;
+            final Key prefixKey = new Key(prefixDecimal, numDigitsInPrefix);
+            numDeciBinaries += decimal2CountOfDeciB.getOrDefault(prefixKey, 0L);
+        }
+        return numDeciBinaries;
+    }
+
+    public static void main(final String[] args) {
+        final long totalNeeded = 10_000_000_000_000_000L;
+        final long startNanos = System.nanoTime();
+        final DecimalToDeciBinary counter = new DecimalToDeciBinary(totalNeeded);
+        final long durationNanos = System.nanoTime() - startNanos;
+        for (int i = 0; counter.decimal2CountOfDeciB.containsKey(i); i++) {
+            System.out.printf("%d:%d%n", i, counter.decimal2CountOfDeciB.get(i));
+        }
+        System.out.printf("Time taken = %d nanos%n", durationNanos);
     }
 
     static long[] createNumDigitsToMinDecimal() {
@@ -50,63 +103,10 @@ public class DecimalToDeciBinary {
         return ret;
     }
 
-    private void generateDeciBinaries() {
-        initBaseCase();
-        int currDeci = 1;
-        while (totalGenerated < deciBinariesNeeded) {
-            processAllKeysFor(currDeci);
-            currDeci++;
-        }
-    }
-
-    private void processAllKeysFor(final int decimal) {
-        final int[] allowedNumDigits = getAllowedNumDigits(decimal);
-        for (final int numDigits : allowedNumDigits) {
-            process(new Key(decimal, numDigits));
-        }
-    }
-
-    private void process(final Key key) {
-        final long numDeciBinaries = computeNumDeciBinaries(key);
-        if (numDeciBinaries != 0) {
-            decimal2CountOfDeciB.put(key, numDeciBinaries);
-            totalGenerated += numDeciBinaries;
-        }
-    }
-
-    private long computeNumDeciBinaries(final Key key) {
-        final int decimal = key.getDecimal();
-        final int numDigits = key.getNumDigits();
-        final int numDigitsInPrefix = numDigits - 1;
-        long numDeciBinaries = 0;
-        final int mod2 = decimal % 2;
-        for (int unitDigit = mod2; unitDigit <= Math.min(9, decimal); unitDigit += 2) {
-            final int prefixDecimal = (decimal - unitDigit) / 2;
-            final Key prefixKey = new Key(prefixDecimal, numDigitsInPrefix);
-            numDeciBinaries += decimal2CountOfDeciB.getOrDefault(prefixKey, 0L);
-        }
-        return numDeciBinaries;
-    }
-
     static int[] getAllowedNumDigits(final int currDeci) {
         return IntStream.range(1, MAX_NUM_DIGITS + 1)
                         .filter(numDigit -> NUM_DIGITS_TO_MIN_DECIMAL[numDigit] <= currDeci)
                         .filter(numDigit -> currDeci <= NUM_DIGITS_TO_MAX_DECIMAL[numDigit]).toArray();
-    }
-
-    public static void main(final String[] args) {
-        final long totalNeeded = 10_000_000_000_000_000L;
-        final long startNanos = System.nanoTime();
-        final DecimalToDeciBinary counter = new DecimalToDeciBinary(totalNeeded);
-        final long durationNanos = System.nanoTime() - startNanos;
-        for (int i = 0; counter.decimal2CountOfDeciB.containsKey(i); i++) {
-            System.out.printf("%d:%d%n", i, counter.decimal2CountOfDeciB.get(i));
-        }
-        System.out.printf("Time taken = %d nanos%n", durationNanos);
-    }
-
-    public long getCountFor(final Key key) {
-        return -1;
     }
 
     static class Key {
