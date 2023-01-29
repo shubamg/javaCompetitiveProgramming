@@ -38,7 +38,25 @@ public class DecimalToDeciBinary {
     }
 
     int getStartingDigit(final long index) {
+        final Key key = getKeyAtIndex(index);
+        getIndexSinceKeyStart(index);
+
+        final int decimal = key.getDecimal();
+        final int numDigits = key.getNumDigits();
+        final int powOf2 = 1 << (numDigits - 1);
+        final int suffixNumDigits = numDigits - 1;
+        long cumulativeDeciBs = 0L;
+        for(int startDigit = 1; startDigit <= 9; startDigit++) {
+            final int suffixDecimal = decimal - powOf2 * startDigit;
+            final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
+
+        }
         return -1;
+    }
+
+    long getIndexSinceKeyStart(final long index) {
+        final long lowerIndex = indexToKeys.lowerEntry(index).getKey();
+        return index - lowerIndex;
     }
 
     private NavigableMap<Long, Key> mapIndexToKeys() {

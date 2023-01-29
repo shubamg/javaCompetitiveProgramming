@@ -99,6 +99,20 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
+    public void getIndexSinceKeyStart() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(18);
+        /*
+            DeciBinary{decimal=6, repr=14},
+            DeciBinary{decimal=6, repr=22},
+            DeciBinary{decimal=6, repr=30},
+         */
+        Assert.assertEquals(1L, cache.getIndexSinceKeyStart(16L));
+        Assert.assertEquals(2L, cache.getIndexSinceKeyStart(17L));
+        Assert.assertEquals(3L, cache.getIndexSinceKeyStart(18L));
+
+    }
+
+    @Test
     public void getStartingDigit() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(25);
         // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
