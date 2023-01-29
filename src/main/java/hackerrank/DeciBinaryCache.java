@@ -74,6 +74,9 @@ public class DeciBinaryCache {
     }
 
     List<Long> getDeciBinaryFor(final int deci) {
+        if (!decimal2DeciBinaries.containsKey(deci)) {
+            return Collections.emptyList();
+        }
         return decimal2DeciBinaries.get(deci).stream().map(DeciBinary::repr).collect(Collectors.toList());
     }
 

@@ -37,4 +37,10 @@ public class DeciBinaryCacheTest {
         Assert.assertTrue(smallDeciBinary.compareTo(largeDeciBinary) < 0);
         Assert.assertTrue(largeDeciBinary.compareTo(smallDeciBinary) > 0);
     }
+
+    @Test
+    public void highInputReturnsEmpty() {
+        final DeciBinaryCache cache = new DeciBinaryCache(1);
+        Assert.assertTrue(cache.getDeciBinaryFor(2).isEmpty());
+    }
 }
