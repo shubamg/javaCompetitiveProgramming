@@ -29,12 +29,16 @@ public class DecimalToDeciBinary {
         generateDeciBinaries();
     }
 
+    long getCountFor(final Key key) {
+        return keyToDeciBCount.get(key);
+    }
+
     Key getKeyAtIndex(final long index) {
         return indexToKeys.ceilingEntry(index).getValue();
     }
 
-    long getCountFor(final Key key) {
-        return keyToDeciBCount.get(key);
+    int getStartingDigit(final long index) {
+        return -1;
     }
 
     private NavigableMap<Long, Key> mapIndexToKeys() {

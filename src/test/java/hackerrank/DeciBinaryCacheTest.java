@@ -98,6 +98,13 @@ public class DeciBinaryCacheTest {
         compareDifferentKeys(smallerKey, largerKey);
     }
 
+    @Test
+    public void getStartingDigit() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(25);
+        // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
+        Assert.assertEquals(1, cache.getStartingDigit(19L));
+    }
+
     private static void compareDifferentKeys(final DecimalToDeciBinary.Key smallerKey, final DecimalToDeciBinary.Key largerKey) {
         Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
         Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
