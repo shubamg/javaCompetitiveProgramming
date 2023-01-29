@@ -80,22 +80,24 @@ public class DeciBinaryCacheTest {
     public void compareKeysWithDifferentDecimal() {
         final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
         final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(5, 1);
-        Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
-        Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
+        compareDifferentKeys(smallerKey, largerKey);
     }
 
     @Test
     public void compareKeysWithDifferentNumDigits() {
         final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
         final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(4, 2);
-        Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
-        Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
+        compareDifferentKeys(smallerKey, largerKey);
     }
 
     @Test
     public void compareDifferentKeys() {
         final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 2);
         final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(5, 1);
+        compareDifferentKeys(smallerKey, largerKey);
+    }
+
+    private static void compareDifferentKeys(final DecimalToDeciBinary.Key smallerKey, final DecimalToDeciBinary.Key largerKey) {
         Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
         Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
     }
