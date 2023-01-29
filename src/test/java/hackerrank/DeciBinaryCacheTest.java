@@ -68,6 +68,14 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(11, DecimalToDeciBinary.getDecimal(deciBinary));
     }
 
+    @Test
+    public void getKeyAtIndex() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(10);
+        final int numDigitsIn100 = 3;
+        final int decimal = DecimalToDeciBinary.getDecimal(100);
+        Assert.assertEquals(new DecimalToDeciBinary.Key(decimal, numDigitsIn100), cache.getKeyAtIndex(10L));
+    }
+
     private static int[] copyArray(
             final int[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
             final int rangeLength) {
