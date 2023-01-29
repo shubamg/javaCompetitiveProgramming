@@ -2,9 +2,9 @@ package hackerrank;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -15,29 +15,22 @@ public class DeciBinaryCache {
 
     private final int deciBinariesNeeded;
     private final Map<Integer, List<DeciBinary>> decimal2DeciBinaries;
-    private int totalDeciBinariesGenerated = 0;
+    private final List<DeciBinary> orderedDeciBinaries;
 
     DeciBinaryCache(final int deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        decimal2DeciBinaries = new TreeMap<>();
+        decimal2DeciBinaries = new HashMap<>();
+        orderedDeciBinaries = new ArrayList<>(deciBinariesNeeded);
         initBaseCase();
         generateDeciBinaries();
     }
 
     private void initBaseCase() {
-        storeNewDeciBinaries(0, Collections.singletonList(new DeciBinary(0, 0L)));
+        decimal2DeciBinaries.put(0, Collections.singletonList(new DeciBinary(0, 0L)));
     }
 
     private List<DeciBinary> computeDeciBinariesIfAbsent(final int deci) {
-        if (!decimal2DeciBinaries.containsKey(deci)) {
-            storeNewDeciBinaries(deci, computeDeciBinariesFor(deci));
-        }
-        return decimal2DeciBinaries.get(deci);
-    }
-
-    private void storeNewDeciBinaries(final int deci, final List<DeciBinary> computedDeciBinaries) {
-        decimal2DeciBinaries.put(deci, computedDeciBinaries);
-        totalDeciBinariesGenerated += computedDeciBinaries.size();
+        return decimal2DeciBinaries.computeIfAbsent(deci, this::computeDeciBinariesFor);
     }
 
     private List<DeciBinary> computeDeciBinariesFor(final int deci) {
@@ -59,8 +52,9 @@ public class DeciBinaryCache {
 
     private void generateDeciBinaries() {
         int currDeci = 0;
-        while (totalDeciBinariesGenerated < deciBinariesNeeded) {
-            computeDeciBinariesIfAbsent(currDeci);
+        while (orderedDeciBinaries.size() < deciBinariesNeeded) {
+            final List<DeciBinary> currDeciBinaries = computeDeciBinariesIfAbsent(currDeci);
+            orderedDeciBinaries.addAll(currDeciBinaries);
             currDeci++;
         }
     }
@@ -73,11 +67,8 @@ public class DeciBinaryCache {
         System.out.printf("Time taken = %d nanos%n", durationNanos);
     }
 
-    List<Long> getDeciBinaryFor(final int deci) {
-        if (!decimal2DeciBinaries.containsKey(deci)) {
-            return Collections.emptyList();
-        }
-        return decimal2DeciBinaries.get(deci).stream().map(DeciBinary::repr).collect(Collectors.toList());
+    List<DeciBinary> getOrderedDeciBinaries() {
+        return orderedDeciBinaries.subList(0, deciBinariesNeeded);
     }
 
     static class DeciBinary implements Comparable<DeciBinary> {
