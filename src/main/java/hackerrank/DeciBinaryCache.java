@@ -37,8 +37,7 @@ public class DeciBinaryCache {
         final List<DeciBinary> ret = new ArrayList<>();
         final int mod2 = deci % 2;
         for (int unitDigit = mod2; unitDigit <= Math.min(9, deci); unitDigit += 2) {
-            final List<DeciBinary> deciBinariesWithUnitDigit = getDeciBinariesWithUnitDigit(deci, unitDigit);
-            ret.addAll(deciBinariesWithUnitDigit);
+            ret.addAll(getDeciBinariesWithUnitDigit(deci, unitDigit));
         }
         Collections.sort(ret);
         return ret;
