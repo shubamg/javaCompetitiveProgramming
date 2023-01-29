@@ -2,8 +2,10 @@ package hackerrank;
 
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 /**
@@ -16,25 +18,39 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
-    private final Map<Key, Long> decimal2CountOfDeciB;
+    private final SortedMap<Key, Long> keyToDeciBCount;
+    private final NavigableMap<Long, Key> indexToKeys;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        decimal2CountOfDeciB = new HashMap<>();
+        keyToDeciBCount = new TreeMap<>();
+        indexToKeys = new TreeMap<>();
         generateDeciBinaries();
     }
 
     Key getKeyAtIndex(final long index) {
-        return null;
+        return indexToKeys.ceilingEntry(index).getValue();
     }
 
     long getCountFor(final Key key) {
-        return decimal2CountOfDeciB.get(key);
+        return keyToDeciBCount.get(key);
+    }
+
+    private NavigableMap<Long, Key> mapIndexToKeys() {
+        long cumulativeIndex = 0L;
+        final TreeMap<Long, Key> index2KeyMap = new TreeMap<>();
+        for (final Map.Entry<Key, Long> keyDeciBCountEntry : keyToDeciBCount.entrySet()) {
+            final Key key = keyDeciBCountEntry.getKey();
+            final long count = keyDeciBCountEntry.getValue();
+            cumulativeIndex += count;
+            index2KeyMap.put(cumulativeIndex, key);
+        }
+        return index2KeyMap;
     }
 
     private void initBaseCase() {
-        decimal2CountOfDeciB.put(new Key(0, 0), 1L);
+        keyToDeciBCount.put(new Key(0, 0), 1L);
         totalGenerated++;
     }
 
@@ -45,6 +61,7 @@ public class DecimalToDeciBinary {
             processAllKeysFor(currDeci);
             currDeci++;
         }
+        indexToKeys.putAll(mapIndexToKeys());
     }
 
     private void processAllKeysFor(final int decimal) {
@@ -57,7 +74,7 @@ public class DecimalToDeciBinary {
     private void processKey(final Key key) {
         final long numDeciBinaries = computeNumDeciBinaries(key);
         if (numDeciBinaries != 0) {
-            decimal2CountOfDeciB.put(key, numDeciBinaries);
+            keyToDeciBCount.put(key, numDeciBinaries);
             totalGenerated += numDeciBinaries;
         }
     }
@@ -71,7 +88,7 @@ public class DecimalToDeciBinary {
         for (int unitDigit = mod2; unitDigit <= Math.min(9, decimal); unitDigit += 2) {
             final int prefixDecimal = (decimal - unitDigit) / 2;
             final Key prefixKey = new Key(prefixDecimal, numDigitsInPrefix);
-            numDeciBinaries += decimal2CountOfDeciB.getOrDefault(prefixKey, 0L);
+            numDeciBinaries += keyToDeciBCount.getOrDefault(prefixKey, 0L);
         }
         return numDeciBinaries;
     }
