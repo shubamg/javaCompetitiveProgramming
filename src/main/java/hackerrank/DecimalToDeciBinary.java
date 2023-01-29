@@ -12,8 +12,8 @@ import java.util.stream.IntStream;
 public class DecimalToDeciBinary {
 
     private static final int MAX_NUM_DIGITS = 20;
-    private static final long[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
-    private static final long[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
+    private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
+    private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
     private final Map<Key, Long> decimal2CountOfDeciB;
     private long totalGenerated = 0;
@@ -71,10 +71,10 @@ public class DecimalToDeciBinary {
         return numDeciBinaries;
     }
 
-    static long[] createNumDigitsToMinDecimal() {
-        final long[] ret = new long[MAX_NUM_DIGITS + 1];
+    static int[] createNumDigitsToMinDecimal() {
+        final int[] ret = new int[MAX_NUM_DIGITS + 1];
         ret[0] = 0;
-        long powOf2 = 1;
+        int powOf2 = 1;
         for (int i = 1; i <= MAX_NUM_DIGITS; i++) {
             ret[i] = powOf2;
             powOf2 *= 2;
@@ -82,9 +82,9 @@ public class DecimalToDeciBinary {
         return ret;
     }
 
-    static long[] createNumDigitsToMaxDecimal() {
-        final long[] ret = new long[MAX_NUM_DIGITS + 1];
-        long powOf2 = 1;
+    static int[] createNumDigitsToMaxDecimal() {
+        final int[] ret = new int[MAX_NUM_DIGITS + 1];
+        int powOf2 = 1;
         for (int i = 0; i <= MAX_NUM_DIGITS; i++) {
             ret[i] = 9 * (powOf2 - 1);
             powOf2 *= 2;
@@ -96,6 +96,19 @@ public class DecimalToDeciBinary {
         return IntStream.range(1, MAX_NUM_DIGITS + 1)
                         .filter(numDigit -> NUM_DIGITS_TO_MIN_DECIMAL[numDigit] <= currDeci)
                         .filter(numDigit -> currDeci <= NUM_DIGITS_TO_MAX_DECIMAL[numDigit]).toArray();
+    }
+
+    static int getDecimal(final long deciBinary) {
+        long remainingDeciBinary = deciBinary;
+        int powOf2 = 1;
+        int decimal = 0;
+        while (remainingDeciBinary > 0) {
+            final int digit = (int) (remainingDeciBinary % 10);
+            decimal += (powOf2 * digit);
+            powOf2 *= 2;
+            remainingDeciBinary /= 10;
+        }
+        return decimal;
     }
 
     static class Key {

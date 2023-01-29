@@ -44,16 +44,16 @@ public class DeciBinaryCacheTest {
 
     @Test
     public void createNumDigitsToMinDecimal() {
-        final long[] numDigitsToMinDecimal = DecimalToDeciBinary.createNumDigitsToMinDecimal();
-        final long[] first5minDecimals = copyArray(numDigitsToMinDecimal, 1, 5);
-        Assert.assertArrayEquals(Arrays.toString(first5minDecimals), new long[]{1L, 2L, 4L, 8L, 16L}, first5minDecimals);
+        final int[] numDigitsToMinDecimal = DecimalToDeciBinary.createNumDigitsToMinDecimal();
+        final int[] first5minDecimals = copyArray(numDigitsToMinDecimal, 1, 5);
+        Assert.assertArrayEquals(Arrays.toString(first5minDecimals), new int[]{1, 2, 4, 8, 16}, first5minDecimals);
     }
 
     @Test
     public void createNumDigitsToMaxDecimal() {
-        final long[] numDigitsToMaxDecimal = DecimalToDeciBinary.createNumDigitsToMaxDecimal();
-        final long[] first2maxDecimals = copyArray(numDigitsToMaxDecimal, 1, 2);
-        Assert.assertArrayEquals(Arrays.toString(first2maxDecimals), new long[]{9L, 27L}, first2maxDecimals);
+        final int[] numDigitsToMaxDecimal = DecimalToDeciBinary.createNumDigitsToMaxDecimal();
+        final int[] first2maxDecimals = copyArray(numDigitsToMaxDecimal, 1, 2);
+        Assert.assertArrayEquals(Arrays.toString(first2maxDecimals), new int[]{9, 27}, first2maxDecimals);
     }
 
     @Test
@@ -62,8 +62,14 @@ public class DeciBinaryCacheTest {
         Assert.assertArrayEquals(Arrays.toString(allowedNumDigitsFor7), new int[] {1, 2, 3}, allowedNumDigitsFor7);
     }
 
-    private static long[] copyArray(
-            final long[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
+    @Test
+    public void getDecimal() {
+        final long deciBinary = 123;
+        Assert.assertEquals(11, DecimalToDeciBinary.getDecimal(deciBinary));
+    }
+
+    private static int[] copyArray(
+            final int[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
             final int rangeLength) {
         return Arrays.copyOfRange(numDigitsToMaxDecimal, start, start + rangeLength);
     }
