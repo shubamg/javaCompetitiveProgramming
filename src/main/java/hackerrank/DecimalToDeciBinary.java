@@ -111,6 +111,10 @@ public class DecimalToDeciBinary {
         return decimal;
     }
 
+    Key getKeyAtIndex(final long index) {
+        return null;
+    }
+
     static class Key {
         private final int decimal;
         private final int numDigits;
