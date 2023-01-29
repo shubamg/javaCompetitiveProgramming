@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Shubham Gupta
@@ -25,7 +25,7 @@ public class DeciBinaryCacheTest {
     public void getOrderedDeciBinaries() {
         // Note that 9 is not at boundary in the sense that the decimal value of 9th and (9+1)th deciBinary is same
         final DeciBinaryCache cache = new DeciBinaryCache(9);
-        final ArrayList<DeciBinaryCache.DeciBinary> expectedDeciBinaries =
+        final List<DeciBinaryCache.DeciBinary> expectedDeciBinaries =
                 Lists.newArrayList(new DeciBinaryCache.DeciBinary(0, 0), new DeciBinaryCache.DeciBinary(1, 1),
                         new DeciBinaryCache.DeciBinary(2, 2), new DeciBinaryCache.DeciBinary(2, 10),
                         new DeciBinaryCache.DeciBinary(3, 3), new DeciBinaryCache.DeciBinary(3, 11),
