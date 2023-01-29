@@ -71,17 +71,6 @@ public class DecimalToDeciBinary {
         return numDeciBinaries;
     }
 
-    public static void main(final String[] args) {
-        final long totalNeeded = 10_000_000_000_000_000L;
-        final long startNanos = System.nanoTime();
-        final DecimalToDeciBinary counter = new DecimalToDeciBinary(totalNeeded);
-        final long durationNanos = System.nanoTime() - startNanos;
-        for (int i = 0; counter.decimal2CountOfDeciB.containsKey(i); i++) {
-            System.out.printf("%d:%d%n", i, counter.decimal2CountOfDeciB.get(i));
-        }
-        System.out.printf("Time taken = %d nanos%n", durationNanos);
-    }
-
     static long[] createNumDigitsToMinDecimal() {
         final long[] ret = new long[MAX_NUM_DIGITS + 1];
         ret[0] = 0;
