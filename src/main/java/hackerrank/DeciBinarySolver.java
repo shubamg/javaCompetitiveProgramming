@@ -15,13 +15,12 @@ public class DeciBinarySolver {
 
     private final int deciBinariesNeeded;
     private final Map<Integer, List<DeciBinary>> decimal2DeciBinaries;
-    private int totalDeciBinariesGenerated;
+    private int totalDeciBinariesGenerated = 0;
 
     private DeciBinarySolver(final int deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         decimal2DeciBinaries = new TreeMap<>();
         initBaseCase();
-        totalDeciBinariesGenerated = 0;
     }
 
     private void initBaseCase() {
