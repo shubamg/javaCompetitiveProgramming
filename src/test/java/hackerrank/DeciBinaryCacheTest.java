@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,5 +40,12 @@ public class DeciBinaryCacheTest {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(20);
         final List<Integer> twoDigitDeciBinariesFor8 = Lists.newArrayList(16, 24, 32, 40);
         Assert.assertEquals(twoDigitDeciBinariesFor8.size(), cache.getCountFor(new DecimalToDeciBinary.Key(8, 2)));
+    }
+
+    @Test
+    public void createNumDigitsToMinDecimal() {
+        final long[] numDigitsToMinDecimal = DecimalToDeciBinary.createNumDigitsToMinDecimal();
+        final long[] first5minDecimals = Arrays.copyOfRange(numDigitsToMinDecimal, 1, 6);
+        Assert.assertArrayEquals(Arrays.toString(first5minDecimals), new long[]{1L, 2L, 4L, 8L, 16L}, first5minDecimals);
     }
 }
