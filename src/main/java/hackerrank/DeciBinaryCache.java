@@ -11,16 +11,17 @@ import java.util.stream.Collectors;
  * Created by Shubham Gupta
  * on 28 Jan 2023.
  */
-public class DeciBinarySolver {
+public class DeciBinaryCache {
 
     private final int deciBinariesNeeded;
     private final Map<Integer, List<DeciBinary>> decimal2DeciBinaries;
     private int totalDeciBinariesGenerated = 0;
 
-    private DeciBinarySolver(final int deciBinariesNeeded) {
+    DeciBinaryCache(final int deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         decimal2DeciBinaries = new TreeMap<>();
         initBaseCase();
+        generateDeciBinaries();
     }
 
     private void initBaseCase() {
@@ -44,9 +45,9 @@ public class DeciBinarySolver {
         final int mod2 = deci % 2;
         for (int unitDigit = mod2; unitDigit <= Math.min(9, deci); unitDigit += 2) {
             final List<DeciBinary> deciBinariesWithUnitDigit = getDeciBinariesWithUnitDigit(deci, unitDigit);
-            Collections.sort(deciBinariesWithUnitDigit);
             ret.addAll(deciBinariesWithUnitDigit);
         }
+        Collections.sort(ret);
         return ret;
     }
 
@@ -66,18 +67,21 @@ public class DeciBinarySolver {
 
     public static void main(final String[] args) {
         final int totalNeeded = 10_000_000;
-        final DeciBinarySolver solver = new DeciBinarySolver(totalNeeded);
+        new DeciBinaryCache(totalNeeded);
         final long startNanos = System.nanoTime();
-        solver.generateDeciBinaries();
         final long durationNanos = System.nanoTime() - startNanos;
         System.out.printf("Time taken = %d nanos%n", durationNanos);
     }
 
-    private static class DeciBinary implements Comparable<DeciBinary> {
+    List<Long> getDeciBinaryFor(final int deci) {
+        return decimal2DeciBinaries.get(deci).stream().map(DeciBinary::repr).collect(Collectors.toList());
+    }
+
+    static class DeciBinary implements Comparable<DeciBinary> {
         private final int decimal;
         private final long repr;
 
-        private DeciBinary(final int decimal, final long repr) {
+        DeciBinary(final int decimal, final long repr) {
             this.decimal = decimal;
             this.repr = repr;
         }
