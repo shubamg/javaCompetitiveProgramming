@@ -12,17 +12,15 @@ import java.util.stream.IntStream;
 public class DecimalToDeciBinary {
 
     private static final int MAX_NUM_DIGITS = 20;
+    private static final long[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
+    private static final long[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
     private final Map<Key, Long> decimal2CountOfDeciB;
-    private final long[] numDigitsToMinDecimal;
-    private final long[] numDigitsToMaxDecimal;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         decimal2CountOfDeciB = new HashMap<>();
-        this.numDigitsToMinDecimal = createNumDigitsToMinDecimal();
-        this.numDigitsToMaxDecimal = createNumDigitsToMaxDecimal();
         generateDeciBinaries();
     }
 
@@ -90,10 +88,10 @@ public class DecimalToDeciBinary {
         return numDeciBinaries;
     }
 
-    private int[] getAllowedNumDigits(final int currDeci) {
+    static int[] getAllowedNumDigits(final int currDeci) {
         return IntStream.range(1, MAX_NUM_DIGITS + 1)
-                        .filter(numDigit -> numDigitsToMinDecimal[numDigit] <= currDeci)
-                        .filter(numDigit -> currDeci <= numDigitsToMaxDecimal[numDigit]).toArray();
+                        .filter(numDigit -> NUM_DIGITS_TO_MIN_DECIMAL[numDigit] <= currDeci)
+                        .filter(numDigit -> currDeci <= NUM_DIGITS_TO_MAX_DECIMAL[numDigit]).toArray();
     }
 
     public static void main(final String[] args) {

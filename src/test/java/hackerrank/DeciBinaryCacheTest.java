@@ -56,6 +56,12 @@ public class DeciBinaryCacheTest {
         Assert.assertArrayEquals(Arrays.toString(first2maxDecimals), new long[]{9L, 27L}, first2maxDecimals);
     }
 
+    @Test
+    public void getAllowedNumDigits() {
+        final int[] allowedNumDigitsFor7 = DecimalToDeciBinary.getAllowedNumDigits(7);
+        Assert.assertArrayEquals(Arrays.toString(allowedNumDigitsFor7), new int[] {1, 2, 3}, allowedNumDigitsFor7);
+    }
+
     private static long[] copyArray(
             final long[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
             final int rangeLength) {
