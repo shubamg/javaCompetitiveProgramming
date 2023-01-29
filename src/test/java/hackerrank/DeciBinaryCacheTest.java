@@ -115,8 +115,17 @@ public class DeciBinaryCacheTest {
     @Test
     public void getStartingDigit() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(25);
+
+        Assert.assertEquals(firstDigit(14), cache.getStartingDigit(16L));
+        Assert.assertEquals(firstDigit(22), cache.getStartingDigit(17L));
+        Assert.assertEquals(firstDigit(30), cache.getStartingDigit(18L));
+
         // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
-        Assert.assertEquals(1, cache.getStartingDigit(19L));
+        Assert.assertEquals(firstDigit(102), cache.getStartingDigit(19L));
+    }
+
+    private static int firstDigit(final int x) {
+        return Integer.parseInt(Integer.toString(x).substring(0, 1));
     }
 
     private static void compareDifferentKeys(final DecimalToDeciBinary.Key smallerKey, final DecimalToDeciBinary.Key largerKey) {

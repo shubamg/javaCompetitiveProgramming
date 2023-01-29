@@ -30,7 +30,10 @@ public class DecimalToDeciBinary {
     }
 
     long getCountFor(final Key key) {
-        return keyToDeciBCount.get(key);
+        if (key.getDecimal() == 0 && key.getNumDigits() > 0) {
+            return 1L;
+        }
+        return keyToDeciBCount.getOrDefault(key, 0L);
     }
 
     Key getKeyAtIndex(final long index) {
@@ -38,9 +41,9 @@ public class DecimalToDeciBinary {
     }
 
     int getStartingDigit(final long index) {
+        assert index > 1;
         final Key key = getKeyAtIndex(index);
-        getIndexSinceKeyStart(index);
-
+        final long indexSinceKeyStart = getIndexSinceKeyStart(index);
         final int decimal = key.getDecimal();
         final int numDigits = key.getNumDigits();
         final int powOf2 = 1 << (numDigits - 1);
@@ -48,10 +51,14 @@ public class DecimalToDeciBinary {
         long cumulativeDeciBs = 0L;
         for(int startDigit = 1; startDigit <= 9; startDigit++) {
             final int suffixDecimal = decimal - powOf2 * startDigit;
-            final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
-
+            if (isKeyValid(suffixDecimal, suffixNumDigits)) {
+                cumulativeDeciBs += getCountFor(new Key(suffixDecimal, suffixNumDigits));
+                if (indexSinceKeyStart <= cumulativeDeciBs) {
+                    return startDigit;
+                }
+            }
         }
-        return -1;
+        throw new IllegalStateException("Unreachable code");
     }
 
     long getIndexSinceKeyStart(final long index) {
@@ -74,6 +81,16 @@ public class DecimalToDeciBinary {
     private void initBaseCase() {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         totalGenerated++;
+    }
+
+    private boolean isKeyValid(final int decimal, final int numDigits) {
+        if (decimal < 0) {
+            return false;
+        }
+        if (decimal == 0) {
+            return numDigits >= 0;
+        }
+        return numDigits > 0;
     }
 
     private void generateDeciBinaries() {
