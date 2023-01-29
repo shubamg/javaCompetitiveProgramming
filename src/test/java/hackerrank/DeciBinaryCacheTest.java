@@ -84,6 +84,14 @@ public class DeciBinaryCacheTest {
         Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
     }
 
+    @Test
+    public void compareKeysWithDifferentNumDigits() {
+        final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
+        final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(4, 2);
+        Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
+        Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
+    }
+
     private static int[] copyArray(
             final int[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
             final int rangeLength) {

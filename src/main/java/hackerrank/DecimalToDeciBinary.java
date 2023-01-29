@@ -1,6 +1,7 @@
 package hackerrank;
 
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -161,8 +162,10 @@ public class DecimalToDeciBinary {
             return "Key{" + "decimal=" + decimal + ", numDigits=" + numDigits + '}';
         }
 
+        @Override
         public int compareTo(final Key other) {
-            return Integer.compare(this.getDecimal(), other.getDecimal());
+            return Comparator.comparingInt(Key::getDecimal).thenComparingInt(Key::getNumDigits)
+                             .compare(this, other);
         }
     }
 }
