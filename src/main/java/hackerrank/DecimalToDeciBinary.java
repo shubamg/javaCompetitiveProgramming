@@ -24,6 +24,10 @@ public class DecimalToDeciBinary {
         generateDeciBinaries();
     }
 
+    Key getKeyAtIndex(final long index) {
+        return null;
+    }
+
     long getCountFor(final Key key) {
         return decimal2CountOfDeciB.get(key);
     }
@@ -111,11 +115,7 @@ public class DecimalToDeciBinary {
         return decimal;
     }
 
-    Key getKeyAtIndex(final long index) {
-        return null;
-    }
-
-    static class Key {
+    static class Key implements Comparable<Key> {
         private final int decimal;
         private final int numDigits;
 
@@ -159,6 +159,10 @@ public class DecimalToDeciBinary {
         @Override
         public String toString() {
             return "Key{" + "decimal=" + decimal + ", numDigits=" + numDigits + '}';
+        }
+
+        public int compareTo(final Key other) {
+            return Integer.compare(this.getDecimal(), other.getDecimal());
         }
     }
 }
