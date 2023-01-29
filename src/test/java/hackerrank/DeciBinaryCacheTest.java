@@ -45,7 +45,20 @@ public class DeciBinaryCacheTest {
     @Test
     public void createNumDigitsToMinDecimal() {
         final long[] numDigitsToMinDecimal = DecimalToDeciBinary.createNumDigitsToMinDecimal();
-        final long[] first5minDecimals = Arrays.copyOfRange(numDigitsToMinDecimal, 1, 6);
+        final long[] first5minDecimals = copyArray(numDigitsToMinDecimal, 1, 5);
         Assert.assertArrayEquals(Arrays.toString(first5minDecimals), new long[]{1L, 2L, 4L, 8L, 16L}, first5minDecimals);
+    }
+
+    @Test
+    public void createNumDigitsToMaxDecimal() {
+        final long[] numDigitsToMaxDecimal = DecimalToDeciBinary.createNumDigitsToMaxDecimal();
+        final long[] first2maxDecimals = copyArray(numDigitsToMaxDecimal, 1, 2);
+        Assert.assertArrayEquals(Arrays.toString(first2maxDecimals), new long[]{9L, 27L}, first2maxDecimals);
+    }
+
+    private static long[] copyArray(
+            final long[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
+            final int rangeLength) {
+        return Arrays.copyOfRange(numDigitsToMaxDecimal, start, start + rangeLength);
     }
 }
