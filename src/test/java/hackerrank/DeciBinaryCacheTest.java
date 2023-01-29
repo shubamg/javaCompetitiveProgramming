@@ -122,6 +122,9 @@ public class DeciBinaryCacheTest {
 
         // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
         Assert.assertEquals(firstDigit(102), cache.getStartingDigit(19L));
+
+        Assert.assertEquals(firstDigit(101), cache.getStartingDigit(14L));
+
     }
 
     private static int firstDigit(final int x) {

@@ -18,7 +18,7 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
-    private final SortedMap<Key, Long> keyToDeciBCount;
+    private final NavigableMap<Key, Long> keyToDeciBCount;
     private final NavigableMap<Long, Key> indexToKeys;
     private long totalGenerated = 0;
 
@@ -30,9 +30,6 @@ public class DecimalToDeciBinary {
     }
 
     long getCountFor(final Key key) {
-        if (key.getDecimal() == 0 && key.getNumDigits() > 0) {
-            return 1L;
-        }
         return keyToDeciBCount.getOrDefault(key, 0L);
     }
 
@@ -52,7 +49,10 @@ public class DecimalToDeciBinary {
         for(int startDigit = 1; startDigit <= 9; startDigit++) {
             final int suffixDecimal = decimal - powOf2 * startDigit;
             if (isKeyValid(suffixDecimal, suffixNumDigits)) {
-                cumulativeDeciBs += getCountFor(new Key(suffixDecimal, suffixNumDigits));
+                final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
+                final Map.Entry<Key, Long> floorSuffixEntry = keyToDeciBCount.floorEntry(suffixKey);
+                assert floorSuffixEntry.getKey().getDecimal() == suffixDecimal;
+                cumulativeDeciBs += floorSuffixEntry.getValue();
                 if (indexSinceKeyStart <= cumulativeDeciBs) {
                     return startDigit;
                 }
@@ -225,4 +225,3 @@ public class DecimalToDeciBinary {
         }
     }
 }
-
