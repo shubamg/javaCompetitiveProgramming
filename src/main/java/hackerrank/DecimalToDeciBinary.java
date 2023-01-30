@@ -18,14 +18,16 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
-    private final NavigableMap<Key, Long> keyToDeciBCount;
+    private final SortedMap<Key, Long> keyToDeciBCount;
     private final NavigableMap<Long, Key> indexToKeys;
+    private final NavigableMap<Key, Long> keys2CumulativeIndex;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
         indexToKeys = new TreeMap<>();
+        keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
     }
 
@@ -48,17 +50,28 @@ public class DecimalToDeciBinary {
         long cumulativeDeciBs = 0L;
         for(int startDigit = 1; startDigit <= 9; startDigit++) {
             final int suffixDecimal = decimal - powOf2 * startDigit;
-            if (isKeyValid(suffixDecimal, suffixNumDigits)) {
-                final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
-                final Map.Entry<Key, Long> floorSuffixEntry = keyToDeciBCount.floorEntry(suffixKey);
-                assert floorSuffixEntry.getKey().getDecimal() == suffixDecimal;
-                cumulativeDeciBs += floorSuffixEntry.getValue();
-                if (indexSinceKeyStart <= cumulativeDeciBs) {
-                    return startDigit;
-                }
+            if (suffixDecimal < 0) {
+                break;
+            }
+            final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
+            final long suffixDeciBs = getFlooredDeciBsWithSameDecimal(suffixKey);
+            cumulativeDeciBs += suffixDeciBs;
+            if (indexSinceKeyStart <= cumulativeDeciBs) {
+                return startDigit;
             }
         }
         throw new IllegalStateException("Unreachable code");
+    }
+
+    private long getFlooredDeciBsWithSameDecimal(final Key key) {
+        final int decimal = key.getDecimal();
+        if (decimal == 0) {
+            return 1;
+        }
+        final Map.Entry<Key, Long> floorEntry = keys2CumulativeIndex.floorEntry(key);
+        final Map.Entry<Key, Long> entryFlooredOnDecimal = keys2CumulativeIndex.floorEntry(new Key(decimal, 0));
+        assert floorEntry.getKey().getDecimal() == decimal;
+        return floorEntry.getValue() - entryFlooredOnDecimal.getValue();
     }
 
     long getIndexSinceKeyStart(final long index) {
@@ -66,31 +79,20 @@ public class DecimalToDeciBinary {
         return index - lowerIndex;
     }
 
-    private NavigableMap<Long, Key> mapIndexToKeys() {
+    private void populateCumulativeMaps() {
         long cumulativeIndex = 0L;
-        final TreeMap<Long, Key> index2KeyMap = new TreeMap<>();
         for (final Map.Entry<Key, Long> keyDeciBCountEntry : keyToDeciBCount.entrySet()) {
             final Key key = keyDeciBCountEntry.getKey();
             final long count = keyDeciBCountEntry.getValue();
             cumulativeIndex += count;
-            index2KeyMap.put(cumulativeIndex, key);
+            indexToKeys.put(cumulativeIndex, key);
+            keys2CumulativeIndex.put(key, cumulativeIndex);
         }
-        return index2KeyMap;
     }
 
     private void initBaseCase() {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         totalGenerated++;
-    }
-
-    private boolean isKeyValid(final int decimal, final int numDigits) {
-        if (decimal < 0) {
-            return false;
-        }
-        if (decimal == 0) {
-            return numDigits >= 0;
-        }
-        return numDigits > 0;
     }
 
     private void generateDeciBinaries() {
@@ -100,7 +102,7 @@ public class DecimalToDeciBinary {
             processAllKeysFor(currDeci);
             currDeci++;
         }
-        indexToKeys.putAll(mapIndexToKeys());
+        populateCumulativeMaps();
     }
 
     private void processAllKeysFor(final int decimal) {

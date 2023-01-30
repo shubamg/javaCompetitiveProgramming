@@ -114,7 +114,7 @@ public class DeciBinaryCacheTest {
 
     @Test
     public void getStartingDigit() {
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(25);
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(45);
 
         Assert.assertEquals(firstDigit(14), cache.getStartingDigit(16L));
         Assert.assertEquals(firstDigit(22), cache.getStartingDigit(17L));
@@ -124,7 +124,7 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(firstDigit(102), cache.getStartingDigit(19L));
 
         Assert.assertEquals(firstDigit(101), cache.getStartingDigit(14L));
-
+        Assert.assertEquals(firstDigit(201), cache.getStartingDigit(45L));
     }
 
     private static int firstDigit(final int x) {
