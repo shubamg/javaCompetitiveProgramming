@@ -127,6 +127,21 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(firstDigit(201), cache.getStartingDigit(45L));
     }
 
+    @Test
+    public void getDeciBinary() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(45);
+
+        Assert.assertEquals(14, cache.getDeciBinary(16L));
+        Assert.assertEquals(22, cache.getDeciBinary(17L));
+        Assert.assertEquals(30, cache.getDeciBinary(18L));
+
+        // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
+        Assert.assertEquals(102, cache.getDeciBinary(19L));
+
+        Assert.assertEquals(101, cache.getDeciBinary(14L));
+        Assert.assertEquals(201, cache.getDeciBinary(45L));
+    }
+
     private static int firstDigit(final int x) {
         return Integer.parseInt(Integer.toString(x).substring(0, 1));
     }
