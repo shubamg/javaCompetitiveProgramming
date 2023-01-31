@@ -1,8 +1,10 @@
 package hackerrank;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -22,23 +24,26 @@ public class DecimalToDeciBinary {
     private static final int MAX_NUM_DECIMALS = 300_000;
 
     private final long deciBinariesNeeded;
-    private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToCount;
+    private final List<Map<Integer, Long>> decimalToNumDigitsToCount;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
-    private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
-    private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToEndingRelPos;
+    private final List<NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
+    private final List<Map<Integer, Long>> decimalToNumDigitsToEndingRelPos;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        decimalToNumDigitsToCount = new HashMap<>(MAX_NUM_DECIMALS);
+        decimalToNumDigitsToCount = new ArrayList<>(MAX_NUM_DECIMALS);
         endingIndexToDecimal = new TreeMap<>();
-        decimalToEndingRelPosToNumDigits = new HashMap<>(MAX_NUM_DECIMALS);
-        decimalToNumDigitsToEndingRelPos = new HashMap<>(MAX_NUM_DECIMALS);
+        decimalToEndingRelPosToNumDigits = new ArrayList<>(MAX_NUM_DECIMALS);
+        decimalToNumDigitsToEndingRelPos = new ArrayList<>(MAX_NUM_DECIMALS);
         generateDeciBinaries();
     }
 
     long getCountFor(final int decimal, final int numDigits) {
-        return decimalToNumDigitsToCount.getOrDefault(decimal, Collections.emptyMap()).getOrDefault(numDigits, 0L);
+        if (decimalToNumDigitsToCount.size() < decimal) {
+            return 0L;
+        }
+        return decimalToNumDigitsToCount.get(decimal).getOrDefault(numDigits, 0L);
     }
 
     long getDeciBinary(final long globalPos) {
@@ -127,14 +132,14 @@ public class DecimalToDeciBinary {
     }
 
     private void initBaseCase() {
-        decimalToNumDigitsToCount.put(0, Collections.singletonMap(0, 1L));
+        decimalToNumDigitsToCount.add(Collections.singletonMap(0, 1L));
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
         final TreeMap<Integer, Long> numDigitsToRelPosForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
         numDigitsToRelPosForZero.put(0, 1L);
         endingIndexToDecimal.put(1L, 0);
-        decimalToEndingRelPosToNumDigits.put(0, relPosToNumDigitsForZero);
-        decimalToNumDigitsToEndingRelPos.put(0, numDigitsToRelPosForZero);
+        decimalToEndingRelPosToNumDigits.add(relPosToNumDigitsForZero);
+        decimalToNumDigitsToEndingRelPos.add(numDigitsToRelPosForZero);
         totalGenerated++;
     }
 
@@ -149,7 +154,7 @@ public class DecimalToDeciBinary {
 
     private void generateDeciBinariesFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
-        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
+//        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
         final Map<Integer, Long> numDigitsToRelPos = new HashMap<>();
         final Map<Integer, Long> numDigitsToCount = new HashMap<>();
         long relPos = 0L;
@@ -157,16 +162,16 @@ public class DecimalToDeciBinary {
             final long numDeciBinaries = computeNumDeciBinaries(decimal, numDigits);
             if (numDeciBinaries != 0) {
                 relPos += numDeciBinaries;
-                relPosToNumDigits.put(relPos, numDigits);
+//                relPosToNumDigits.put(relPos, numDigits);
                 numDigitsToRelPos.put(numDigits, relPos);
                 numDigitsToCount.put(numDigits, numDeciBinaries);
                 totalGenerated += numDeciBinaries;
             }
         }
-        decimalToNumDigitsToCount.put(decimal, numDigitsToCount);
+        decimalToNumDigitsToCount.add(numDigitsToCount);
         endingIndexToDecimal.put(totalGenerated, decimal);
 //        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
-        decimalToNumDigitsToEndingRelPos.put(decimal, numDigitsToRelPos);
+        decimalToNumDigitsToEndingRelPos.add(numDigitsToRelPos);
     }
 
     private long computeNumDeciBinaries(final int decimal, final int numDigits) {
