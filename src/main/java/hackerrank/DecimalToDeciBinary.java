@@ -49,7 +49,13 @@ public class DecimalToDeciBinary {
     }
 
     int getNumDigits(final int decimal, final long relPos) {
-        return -1;
+        assert relPos > 0;
+        final NavigableMap<Long, Integer> endingRelPosToNumDigits = decimalToEndingRelPosToNumDigits.get(decimal);
+        final Map.Entry<Long, Integer> ceilingEntry = endingRelPosToNumDigits.ceilingEntry(relPos);
+        if (ceilingEntry == null) {
+            return -1;
+        }
+        return ceilingEntry.getValue();
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {

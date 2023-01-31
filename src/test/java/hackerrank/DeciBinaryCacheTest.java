@@ -178,12 +178,35 @@ public class DeciBinaryCacheTest {
         globalPos = 19, relPos = 5: DeciBinary{decimal=6, repr=102},
         globalPos = 20, relPos = 6: DeciBinary{decimal=6, repr=110},
          */
-//        Assert.assertEquals(1L, cache.getRelPos(6, 15L));
+        Assert.assertEquals(1L, cache.getPosRelativeToDecimalStart(15L));
         Assert.assertEquals(2L, cache.getPosRelativeToDecimalStart(16L));
         Assert.assertEquals(3L, cache.getPosRelativeToDecimalStart(17L));
         Assert.assertEquals(4L, cache.getPosRelativeToDecimalStart(18L));
         Assert.assertEquals(5L, cache.getPosRelativeToDecimalStart(19L));
         Assert.assertEquals(6L, cache.getPosRelativeToDecimalStart(20L));
+    }
+
+    @Test
+    public void getNumDigits() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
+        /*
+        relPos = 1: DeciBinary{decimal=6, repr=6},
+        relPos = 2: DeciBinary{decimal=6, repr=14},
+        relPos = 3: DeciBinary{decimal=6, repr=22},
+        relPos = 4: DeciBinary{decimal=6, repr=30},
+        relPos = 5: DeciBinary{decimal=6, repr=102},
+        relPos = 6: DeciBinary{decimal=6, repr=110},
+         */
+        Assert.assertEquals(0, cache.getNumDigits(0, 1L));
+        Assert.assertEquals(-1, cache.getNumDigits(0, 2L));
+
+        Assert.assertEquals(1, cache.getNumDigits(6, 1L));
+        Assert.assertEquals(2, cache.getNumDigits(6, 2L));
+        Assert.assertEquals(2, cache.getNumDigits(6, 3L));
+        Assert.assertEquals(2, cache.getNumDigits(6, 4L));
+        Assert.assertEquals(3, cache.getNumDigits(6, 5L));
+        Assert.assertEquals(3, cache.getNumDigits(6, 6L));
+        Assert.assertEquals(-1, cache.getNumDigits(6, 7L));
     }
 
     private static int firstDigit(final int x) {
