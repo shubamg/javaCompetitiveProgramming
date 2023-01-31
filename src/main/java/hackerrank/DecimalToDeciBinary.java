@@ -145,7 +145,7 @@ public class DecimalToDeciBinary {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
-        endingIndexToDecimal.put(0L, 0);
+        endingIndexToDecimal.put(1L, 0);
         decimalToEndingRelPosToNumDigits.put(0, relPosToNumDigitsForZero);
         totalGenerated++;
     }
