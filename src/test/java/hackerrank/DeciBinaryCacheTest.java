@@ -142,6 +142,32 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(201, cache.getDeciBinary(45L));
     }
 
+    @Test
+    public void getNumDigitsFromRelativePos() {
+        /*
+            1: DeciBinary{decimal=10, repr=18},
+            2: DeciBinary{decimal=10, repr=26},
+            3: DeciBinary{decimal=10, repr=34},
+            4: DeciBinary{decimal=10, repr=42},
+            5: DeciBinary{decimal=10, repr=50},
+            6: DeciBinary{decimal=10, repr=106},
+            7: DeciBinary{decimal=10, repr=114},
+            8: DeciBinary{decimal=10, repr=122},
+            9: DeciBinary{decimal=10, repr=130},
+            10: DeciBinary{decimal=10, repr=202},
+            11: DeciBinary{decimal=10, repr=210},
+            12: DeciBinary{decimal=10, repr=1002},
+            13: DeciBinary{decimal=10, repr=1010},
+         */
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
+        final int firstRelPosFor2DigitDeciB = 1;
+        Assert.assertEquals(2, cache.getRelativePos(10, firstRelPosFor2DigitDeciB));
+        final int middleRelPosFor2DigitDeciB = 2;
+        Assert.assertEquals(2, cache.getRelativePos(10, middleRelPosFor2DigitDeciB));
+        final int lastRelPosFor2DigitDeciB = 5;
+        Assert.assertEquals(2, cache.getRelativePos(10, lastRelPosFor2DigitDeciB));
+    }
+
     private static int firstDigit(final int x) {
         return Integer.parseInt(Integer.toString(x).substring(0, 1));
     }

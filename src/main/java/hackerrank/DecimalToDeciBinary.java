@@ -178,6 +178,10 @@ public class DecimalToDeciBinary {
         return decimal;
     }
 
+    int getRelativePos(final int decimal, final long relativeIndex) {
+        return 0;
+    }
+
     static class Key implements Comparable<Key> {
         private final int decimal;
         private final int numDigits;
