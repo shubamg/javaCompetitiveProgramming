@@ -22,7 +22,6 @@ public class DecimalToDeciBinary {
 
     private final long deciBinariesNeeded;
     private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
-    private final NavigableMap<Long, Key> endingIndexToKeys;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
     private final Map<Integer, NavigableMap<Integer, Long>> decimalToNumDigitsToEndingRelPos;
@@ -31,7 +30,6 @@ public class DecimalToDeciBinary {
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
-        endingIndexToKeys = new TreeMap<>();
         endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         decimalToNumDigitsToEndingRelPos = new HashMap<>();
@@ -125,7 +123,7 @@ public class DecimalToDeciBinary {
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {
-        return endingIndexToKeys.ceilingEntry(globalPos).getValue().getDecimal();
+        return endingIndexToDecimal.ceilingEntry(globalPos).getValue();
     }
 
     long getPosRelativeToDecimalStart(final long globalPos) {
@@ -142,7 +140,6 @@ public class DecimalToDeciBinary {
             final Key key = keyDeciBCountEntry.getKey();
             final long count = keyDeciBCountEntry.getValue();
             cumulativeIndex += count;
-            endingIndexToKeys.put(cumulativeIndex, key);
         }
     }
 
