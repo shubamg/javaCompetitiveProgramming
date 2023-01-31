@@ -20,7 +20,7 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
     private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
-    private final NavigableMap<Long, Key> indexToKeys;
+    private final NavigableMap<Long, Key> endingIndexToKeys;
     private final NavigableMap<Key, Long> keys2CumulativeIndex; // may be removed
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits;
     private long totalGenerated = 0;
@@ -28,7 +28,7 @@ public class DecimalToDeciBinary {
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
-        indexToKeys = new TreeMap<>();
+        endingIndexToKeys = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
@@ -39,7 +39,7 @@ public class DecimalToDeciBinary {
     }
 
     Key getKeyAtIndex(final long index) {
-        return indexToKeys.ceilingEntry(index).getValue();
+        return endingIndexToKeys.ceilingEntry(index).getValue();
     }
 
     long getDeciBinary(final int decimal, final long relPos, final int maxDigits) {
@@ -51,7 +51,7 @@ public class DecimalToDeciBinary {
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {
-        return -1;
+        return getKeyAtIndex(globalPos).getDecimal();
     }
 
     int getStartingDigit(final long index) {
@@ -90,7 +90,7 @@ public class DecimalToDeciBinary {
     }
 
     long getIndexSinceKeyStart(final long index) {
-        final long lowerIndex = indexToKeys.lowerEntry(index).getKey();
+        final long lowerIndex = endingIndexToKeys.lowerEntry(index).getKey();
         return index - lowerIndex;
     }
 
@@ -100,7 +100,7 @@ public class DecimalToDeciBinary {
             final Key key = keyDeciBCountEntry.getKey();
             final long count = keyDeciBCountEntry.getValue();
             cumulativeIndex += count;
-            indexToKeys.put(cumulativeIndex, key);
+            endingIndexToKeys.put(cumulativeIndex, key);
             keys2CumulativeIndex.put(key, cumulativeIndex);
         }
     }

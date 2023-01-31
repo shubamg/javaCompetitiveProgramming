@@ -160,10 +160,9 @@ public class DeciBinaryCacheTest {
     public void getDecimalFromGlobalPos() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(0), cache.getDecimalFromGlobalPos(1L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(1), cache.getDecimalFromGlobalPos(2L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(2), cache.getDecimalFromGlobalPos(3L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(10), cache.getDecimalFromGlobalPos(4L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(100), cache.getDecimalFromGlobalPos(10L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(14), cache.getDecimalFromGlobalPos(16L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(22), cache.getDecimalFromGlobalPos(17L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(30), cache.getDecimalFromGlobalPos(18L));
     }
 
     private static int firstDigit(final int x) {
