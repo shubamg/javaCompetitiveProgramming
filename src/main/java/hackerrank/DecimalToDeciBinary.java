@@ -54,6 +54,10 @@ public class DecimalToDeciBinary {
         return 0L;
     }
 
+    int getNumDeciBsWithMaxDigits(final int decimal, final int maxDigits) {
+        return -1;
+    }
+
     int getNumDigits(final int decimal, final long relPos) {
         assert relPos > 0;
         final NavigableMap<Long, Integer> endingRelPosToNumDigits = decimalToEndingRelPosToNumDigits.get(decimal);
