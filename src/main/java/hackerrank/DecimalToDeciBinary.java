@@ -54,8 +54,18 @@ public class DecimalToDeciBinary {
         return 0L;
     }
 
-    int getNumDeciBsWithMaxDigits(final int decimal, final int maxDigits) {
-        return -1;
+    long getNumDeciBsWithMaxDigits(final int decimal, final int maxDigitsAllowed) {
+        final NavigableMap<Long, Integer> endingRelPosToNumDigits = decimalToEndingRelPosToNumDigits.get(decimal);
+        final int minDigits = endingRelPosToNumDigits.firstEntry().getValue();
+        if (minDigits > maxDigitsAllowed) {
+            return 0L; // return 0 if all deciBinary have greater than maxDigitsAllowed
+        }
+        //noinspection OptionalGetWithoutIsPresent, explicitly checked up
+        return endingRelPosToNumDigits.entrySet().stream()
+                                      .filter(e -> e.getValue() <= maxDigitsAllowed) // filter on num digits
+                                      .mapToLong(Map.Entry::getKey) // map to Rel Pos
+                                      .max()
+                                      .getAsLong();
     }
 
     int getNumDigits(final int decimal, final long relPos) {
