@@ -18,6 +18,8 @@ public class DecimalToDeciBinary {
     private static final int MAX_NUM_DIGITS = 20;
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
+    private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
+
     private final long deciBinariesNeeded;
     private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
     private final NavigableMap<Long, Key> endingIndexToKeys;
@@ -59,13 +61,14 @@ public class DecimalToDeciBinary {
         if (decimal == 0) {
             return 0L;
         }
+        final long numDeciBsWithLessDigits = getNumDeciBsWithMaxDigits(decimal, numDigits - 1);
+        long suffixRelPos = relPos - numDeciBsWithLessDigits;
         final int maxDigitsForSuffix = numDigits - 1;
-        long suffixRelPos = relPos;
         for (int firstDigit = 1; firstDigit <= 9; firstDigit++) {
             final int contributionOfFirstDigit = (1 << (numDigits - 1)) * firstDigit;
             final int suffixDecimal = decimal - contributionOfFirstDigit;
             final long numDeciBsWithSuffix = getNumDeciBsWithMaxDigits(suffixDecimal, maxDigitsForSuffix);
-            if (numDeciBsWithSuffix < relPos) {
+            if (numDeciBsWithSuffix < suffixRelPos) {
                 suffixRelPos -= numDeciBsWithSuffix; // try a different first digit
             } else {
                 final int suffixNumDigits = getNumDigits(suffixDecimal, suffixRelPos);
@@ -257,6 +260,17 @@ public class DecimalToDeciBinary {
         return ret;
     }
 
+
+    static long[] posToDecimalPlaceValue() {
+        final long[] ret = new long[MAX_NUM_DIGITS + 1];
+        long powOf10 = 1L;
+        for (int i = 0; i <= MAX_NUM_DIGITS; i++) {
+            ret[i] = powOf10;
+            powOf10 *= 10L;
+        }
+        return ret;
+    }
+    
     static int[] createNumDigitsToMaxDecimal() {
         final int[] ret = new int[MAX_NUM_DIGITS + 1];
         int powOf2 = 1;
