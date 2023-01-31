@@ -134,15 +134,6 @@ public class DecimalToDeciBinary {
         return globalPos - endingPosForPrevDecimal;
     }
 
-    private void populateCumulativeMaps() {
-        long cumulativeIndex = 0L;
-        for (final Map.Entry<Key, Long> keyDeciBCountEntry : keyToDeciBCount.entrySet()) {
-            final Key key = keyDeciBCountEntry.getKey();
-            final long count = keyDeciBCountEntry.getValue();
-            cumulativeIndex += count;
-        }
-    }
-
     private void initBaseCase() {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
@@ -162,7 +153,6 @@ public class DecimalToDeciBinary {
             processAllKeysFor(currDeci);
             currDeci++;
         }
-        populateCumulativeMaps();
     }
 
     private void processAllKeysFor(final int decimal) {
