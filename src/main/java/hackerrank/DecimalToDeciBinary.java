@@ -53,7 +53,7 @@ public class DecimalToDeciBinary {
         if (decimal == 0) {
             return 0L;
         }
-        final int numDigits = getNumDigits(decimal, relPos);
+        final int numDigits = getNumDigitsSlowly(decimal, relPos);
         final long numDeciBsWithLessDigits = getNumDeciBsWithMaxDigits(decimal, numDigits - 1);
         long suffixRelPos = relPos - numDeciBsWithLessDigits;
         final int maxDigitsForSuffix = numDigits - 1;
@@ -64,8 +64,8 @@ public class DecimalToDeciBinary {
             if (numDeciBsWithSuffix < suffixRelPos) {
                 suffixRelPos -= numDeciBsWithSuffix; // try a different first digit
             } else {
-                final long decimalPLaceValOfFirstDigit = firstDigit * POS_TO_DECIMAL_PLACE_VALUE[numDigits];
-                return decimalPLaceValOfFirstDigit + getDeciBinaryInternal(suffixDecimal, suffixRelPos);
+                final long decimalPlaceValOfFirstDigit = firstDigit * POS_TO_DECIMAL_PLACE_VALUE[numDigits];
+                return decimalPlaceValOfFirstDigit + getDeciBinaryInternal(suffixDecimal, suffixRelPos);
             }
         }
         throw new IllegalStateException("Unreachable code");
@@ -170,7 +170,7 @@ public class DecimalToDeciBinary {
             }
         }
         endingIndexToDecimal.put(totalGenerated, decimal);
-        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
+//        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
         decimalToNumDigitsToEndingRelPos.put(decimal, numDigitsToRelPos);
     }
 
