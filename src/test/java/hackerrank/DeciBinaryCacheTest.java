@@ -285,6 +285,18 @@ public class DeciBinaryCacheTest {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
         Assert.assertEquals(0, cache.getDeciBinary(1));
         Assert.assertEquals(1, cache.getDeciBinary(2));
+
+        // from https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=true Sample Input 2
+        Assert.assertEquals(102, cache.getDeciBinary(10));
+        Assert.assertEquals(103, cache.getDeciBinary(19));
+        Assert.assertEquals(11, cache.getDeciBinary(6));
+        Assert.assertEquals(12, cache.getDeciBinary(8));
+        Assert.assertEquals(110, cache.getDeciBinary(20));
+        Assert.assertEquals(100, cache.getDeciBinary(10));
+        Assert.assertEquals(8, cache.getDeciBinary(27));
+        Assert.assertEquals(31, cache.getDeciBinary(24));
+        Assert.assertEquals(32, cache.getDeciBinary(30));
+        Assert.assertEquals(5, cache.getDeciBinary(11));
     }
 
     private static int firstDigit(final int x) {
