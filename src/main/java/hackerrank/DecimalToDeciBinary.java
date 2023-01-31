@@ -95,7 +95,6 @@ public class DecimalToDeciBinary {
                                       .getAsLong();
     }
 
-
     int getNumDigits(final int decimal, final long relPos) {
         assert relPos > 0;
         final NavigableMap<Long, Integer> endingRelPosToNumDigits = decimalToEndingRelPosToNumDigits.get(decimal);

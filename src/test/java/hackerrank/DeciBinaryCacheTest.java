@@ -78,11 +78,19 @@ public class DeciBinaryCacheTest {
 
     @Test
     public void getDecimalFromGlobalPos() {
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(10_000_000_000_000_000L);
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(0L), cache.getDecimalFromGlobalPos(1L));
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(14L), cache.getDecimalFromGlobalPos(16L));
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(22L), cache.getDecimalFromGlobalPos(17L));
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(30L), cache.getDecimalFromGlobalPos(18L));
+    }
+
+    @Test
+    public void measurePerformance() {
+        final long startTime = System.nanoTime();
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(10_000_000_000_000_000L);
+        System.out.printf("Took %d nanos %n", System.nanoTime() - startTime);
+        Assert.assertEquals(32, cache.getDeciBinary(30));
     }
 
     @Test
