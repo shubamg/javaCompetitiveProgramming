@@ -21,6 +21,7 @@ public class DecimalToDeciBinary {
     private final long deciBinariesNeeded;
     private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
     private final NavigableMap<Long, Key> endingIndexToKeys;
+    private final NavigableMap<Long, Integer> endingIndexToDecimal;
     private final NavigableMap<Key, Long> keys2CumulativeIndex; // may be removed
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits;
     private long totalGenerated = 0;
@@ -29,6 +30,7 @@ public class DecimalToDeciBinary {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
         endingIndexToKeys = new TreeMap<>();
+        endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
@@ -52,6 +54,14 @@ public class DecimalToDeciBinary {
 
     int getDecimalFromGlobalPos(final long globalPos) {
         return getKeyAtIndex(globalPos).getDecimal();
+    }
+
+    long getRelPos(final int decimal, final long globalPos) {
+        if (decimal == 0) {
+            return 1L;
+        }
+        final long endingPosForPrevDecimal = endingIndexToDecimal.lowerEntry(globalPos).getKey();
+        return globalPos - endingPosForPrevDecimal;
     }
 
     int getStartingDigit(final long index) {
@@ -109,6 +119,7 @@ public class DecimalToDeciBinary {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
+        endingIndexToDecimal.put(0L, 0);
         decimalToEndingRelPosToNumDigits.put(0, relPosToNumDigitsForZero);
         totalGenerated++;
     }
@@ -125,20 +136,19 @@ public class DecimalToDeciBinary {
 
     private void processAllKeysFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
-        final Map<Integer, Long> numDigitsToRelPos = new HashMap<>();
+        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
         long relPos = 0L;
         for (final int numDigits : allowedNumDigits) {
             final Key key = new Key(decimal, numDigits);
             final long numDeciBinaries = computeNumDeciBinaries(key);
             if (numDeciBinaries != 0) {
                 relPos += numDeciBinaries;
-                numDigitsToRelPos.put(numDigits, relPos);
+                relPosToNumDigits.put(relPos, numDigits);
                 keyToDeciBCount.put(key, numDeciBinaries);
                 totalGenerated += numDeciBinaries;
             }
         }
-        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
-        numDigitsToRelPos.forEach((numDigits, _relPos) -> relPosToNumDigits.put(_relPos, numDigits));
+        endingIndexToDecimal.put(totalGenerated, decimal);
         decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
     }
 

@@ -159,10 +159,31 @@ public class DeciBinaryCacheTest {
     @Test
     public void getDecimalFromGlobalPos() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(0), cache.getDecimalFromGlobalPos(1L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(14), cache.getDecimalFromGlobalPos(16L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(22), cache.getDecimalFromGlobalPos(17L));
-        Assert.assertEquals(DecimalToDeciBinary.getDecimal(30), cache.getDecimalFromGlobalPos(18L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(0L), cache.getDecimalFromGlobalPos(1L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(14L), cache.getDecimalFromGlobalPos(16L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(22L), cache.getDecimalFromGlobalPos(17L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(30L), cache.getDecimalFromGlobalPos(18L));
+    }
+
+    @Test
+    public void getRelPos() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
+        Assert.assertEquals(1L, cache.getRelPos(0, 1L));
+
+        /*
+        globalPos = 15, relPos = 1: DeciBinary{decimal=6, repr=6},
+        globalPos = 16, relPos = 2: DeciBinary{decimal=6, repr=14},
+        globalPos = 17, relPos = 3: DeciBinary{decimal=6, repr=22},
+        globalPos = 18, relPos = 4: DeciBinary{decimal=6, repr=30},
+        globalPos = 19, relPos = 5: DeciBinary{decimal=6, repr=102},
+        globalPos = 20, relPos = 6: DeciBinary{decimal=6, repr=110},
+         */
+//        Assert.assertEquals(1L, cache.getRelPos(6, 15L));
+        Assert.assertEquals(2L, cache.getRelPos(6, 16L));
+        Assert.assertEquals(3L, cache.getRelPos(6, 17L));
+        Assert.assertEquals(4L, cache.getRelPos(6, 18L));
+        Assert.assertEquals(5L, cache.getRelPos(6, 19L));
+        Assert.assertEquals(6L, cache.getRelPos(6, 20L));
     }
 
     private static int firstDigit(final int x) {
