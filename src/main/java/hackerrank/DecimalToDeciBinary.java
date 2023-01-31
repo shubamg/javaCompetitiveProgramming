@@ -65,14 +65,15 @@ public class DecimalToDeciBinary {
         long suffixRelPos = relPos - numDeciBsWithLessDigits;
         final int maxDigitsForSuffix = numDigits - 1;
         for (int firstDigit = 1; firstDigit <= 9; firstDigit++) {
-            final int contributionOfFirstDigit = (1 << (numDigits - 1)) * firstDigit;
-            final int suffixDecimal = decimal - contributionOfFirstDigit;
+            final int deciBinaryPlaceValOfFirstDigit = (1 << (numDigits - 1)) * firstDigit;
+            final int suffixDecimal = decimal - deciBinaryPlaceValOfFirstDigit;
             final long numDeciBsWithSuffix = getNumDeciBsWithMaxDigits(suffixDecimal, maxDigitsForSuffix);
             if (numDeciBsWithSuffix < suffixRelPos) {
                 suffixRelPos -= numDeciBsWithSuffix; // try a different first digit
             } else {
                 final int suffixNumDigits = getNumDigits(suffixDecimal, suffixRelPos);
-                return contributionOfFirstDigit + getDeciBinaryInternal(
+                final long decimalPLaceValOfFirstDigit = firstDigit * POS_TO_DECIMAL_PLACE_VALUE[numDigits];
+                return decimalPLaceValOfFirstDigit + getDeciBinaryInternal(
                         suffixDecimal, suffixRelPos, suffixNumDigits);
             }
         }
@@ -260,11 +261,11 @@ public class DecimalToDeciBinary {
         return ret;
     }
 
-
     static long[] posToDecimalPlaceValue() {
         final long[] ret = new long[MAX_NUM_DIGITS + 1];
+        ret[0] = 0L;
         long powOf10 = 1L;
-        for (int i = 0; i <= MAX_NUM_DIGITS; i++) {
+        for (int i = 1; i <= MAX_NUM_DIGITS; i++) {
             ret[i] = powOf10;
             powOf10 *= 10L;
         }

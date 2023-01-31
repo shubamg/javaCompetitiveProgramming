@@ -59,7 +59,7 @@ public class DeciBinaryCacheTest {
     @Test
     public void posToDecimalPlaceValue() {
         final long[] decimalPlaceValues = DecimalToDeciBinary.posToDecimalPlaceValue();
-        final long[] first5decimalPlaceValues = copyLongArray(decimalPlaceValues, 0, 5);
+        final long[] first5decimalPlaceValues = copyLongArray(decimalPlaceValues, 1, 5);
         Assert.assertArrayEquals(Arrays.toString(first5decimalPlaceValues),
                 new long[]{1L, 10L, 100L, 1_000L, 10_000L}, first5decimalPlaceValues);
     }
@@ -291,12 +291,12 @@ public class DeciBinaryCacheTest {
     @Test
     public void getDeciBinary() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
-//        Assert.assertEquals(0, cache.getDeciBinary(1));
-//        Assert.assertEquals(1, cache.getDeciBinary(2));
+        Assert.assertEquals(0, cache.getDeciBinary(1));
+        Assert.assertEquals(1, cache.getDeciBinary(2));
 
         // from https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=true Sample Input 2
-        Assert.assertEquals(102, cache.getDeciBinary(10));
-        Assert.assertEquals(103, cache.getDeciBinary(19));
+        Assert.assertEquals(102, cache.getDeciBinary(19));
+        Assert.assertEquals(103, cache.getDeciBinary(25));
         Assert.assertEquals(11, cache.getDeciBinary(6));
         Assert.assertEquals(12, cache.getDeciBinary(8));
         Assert.assertEquals(110, cache.getDeciBinary(20));
