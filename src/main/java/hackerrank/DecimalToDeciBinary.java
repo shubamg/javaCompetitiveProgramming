@@ -47,11 +47,31 @@ public class DecimalToDeciBinary {
     long getDeciBinary(final long globalPos) {
         final int decimal = getDecimalFromGlobalPos(globalPos);
         final long relPos = getPosRelativeToDecimalStart(globalPos);
-        return getDeciBinaryInternal(decimal, relPos, MAX_NUM_DIGITS);
+        final int numDigits = getNumDigits(decimal, relPos);
+        return getDeciBinaryInternal(decimal, relPos, numDigits);
     }
 
-    private long getDeciBinaryInternal(final int decimal, final long relPos, final int maxDigits) {
-        return 0L;
+    private long getDeciBinaryInternal(final int decimal, final long relPos, final int numDigits) {
+        System.out.printf("Begin call getDeciBinaryInternal(decimal=%d, relPos=%d, numDigits=%d%n", decimal,
+                relPos, numDigits);
+        if (decimal == 0) {
+            return 0L;
+        }
+        final int maxDigitsForSuffix = numDigits - 1;
+        long suffixRelPos = relPos;
+        for (int firstDigit = 1; firstDigit <= 9; firstDigit++) {
+            final int contributionOfFirstDigit = (1 << (numDigits - 1)) * firstDigit;
+            final int suffixDecimal = decimal - contributionOfFirstDigit;
+            final long numDeciBsWithSuffix = getNumDeciBsWithMaxDigits(suffixDecimal, maxDigitsForSuffix);
+            if (numDeciBsWithSuffix < relPos) {
+                suffixRelPos -= numDeciBsWithSuffix; // try a different first digit
+            } else {
+                final int suffixNumDigits = getNumDigits(suffixDecimal, suffixRelPos);
+                return contributionOfFirstDigit + getDeciBinaryInternal(
+                        suffixDecimal, suffixRelPos, suffixNumDigits);
+            }
+        }
+        throw new IllegalStateException("Unreachable code");
     }
 
     long getNumDeciBsWithMaxDigits(final int decimal, final int maxDigitsAllowed) {
