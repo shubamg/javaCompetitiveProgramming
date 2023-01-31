@@ -235,6 +235,29 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
+    public void getNumDeciBsWithMaxDigitsSlowly() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
+
+        Assert.assertEquals(1, cache.getNumDeciBsWithMaxDigitsSlowly(0, 0));
+        Assert.assertEquals(1, cache.getNumDeciBsWithMaxDigitsSlowly(0, 2));
+
+        /*
+        relPos = 1: DeciBinary{decimal=6, repr=6},
+        relPos = 2: DeciBinary{decimal=6, repr=14},
+        relPos = 3: DeciBinary{decimal=6, repr=22},
+        relPos = 4: DeciBinary{decimal=6, repr=30},
+        relPos = 5: DeciBinary{decimal=6, repr=102},
+        relPos = 6: DeciBinary{decimal=6, repr=110},
+         */
+
+        Assert.assertEquals(0, cache.getNumDeciBsWithMaxDigitsSlowly(6, 0));
+        Assert.assertEquals(1, cache.getNumDeciBsWithMaxDigitsSlowly(6, 1));
+        Assert.assertEquals(4, cache.getNumDeciBsWithMaxDigitsSlowly(6, 2));
+        Assert.assertEquals(6, cache.getNumDeciBsWithMaxDigitsSlowly(6, 3));
+        Assert.assertEquals(6, cache.getNumDeciBsWithMaxDigitsSlowly(6, 5));
+    }
+
+    @Test
     public void getDeciBinary() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
         Assert.assertEquals(0, cache.getDeciBinary(1));
