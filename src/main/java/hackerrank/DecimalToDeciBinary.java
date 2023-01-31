@@ -21,7 +21,7 @@ public class DecimalToDeciBinary {
     private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
 
     private final long deciBinariesNeeded;
-    private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
+    private final Map<Key, Long> keyToDeciBCount;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
     private final Map<Integer, NavigableMap<Integer, Long>> decimalToNumDigitsToEndingRelPos;
@@ -29,7 +29,7 @@ public class DecimalToDeciBinary {
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        keyToDeciBCount = new TreeMap<>();
+        keyToDeciBCount = new HashMap<>();
         endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         decimalToNumDigitsToEndingRelPos = new HashMap<>();
