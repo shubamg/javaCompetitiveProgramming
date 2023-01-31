@@ -121,21 +121,6 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
-    public void getStartingDigit() {
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(45);
-
-        Assert.assertEquals(firstDigit(14), cache.getStartingDigit(16L));
-        Assert.assertEquals(firstDigit(22), cache.getStartingDigit(17L));
-        Assert.assertEquals(firstDigit(30), cache.getStartingDigit(18L));
-
-        // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
-        Assert.assertEquals(firstDigit(102), cache.getStartingDigit(19L));
-
-        Assert.assertEquals(firstDigit(101), cache.getStartingDigit(14L));
-        Assert.assertEquals(firstDigit(201), cache.getStartingDigit(45L));
-    }
-
-    @Test
     public void getDecimalFromGlobalPos() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
         Assert.assertEquals(DecimalToDeciBinary.getDecimal(0L), cache.getDecimalFromGlobalPos(1L));

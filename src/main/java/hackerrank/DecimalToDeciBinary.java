@@ -24,7 +24,6 @@ public class DecimalToDeciBinary {
     private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
     private final NavigableMap<Long, Key> endingIndexToKeys;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
-    private final NavigableMap<Key, Long> keys2CumulativeIndex; // may be removed
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
     private final Map<Integer, NavigableMap<Integer, Long>> decimalToNumDigitsToEndingRelPos;
     private long totalGenerated = 0;
@@ -36,7 +35,6 @@ public class DecimalToDeciBinary {
         endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         decimalToNumDigitsToEndingRelPos = new HashMap<>();
-        keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
     }
 
@@ -142,41 +140,6 @@ public class DecimalToDeciBinary {
         return globalPos - endingPosForPrevDecimal;
     }
 
-    int getStartingDigit(final long index) {
-        assert index > 1;
-        final Key key = getKeyAtIndex(index);
-        final long indexSinceKeyStart = getIndexSinceKeyStart(index);
-        final int decimal = key.getDecimal();
-        final int numDigits = key.getNumDigits();
-        final int powOf2 = 1 << (numDigits - 1);
-        final int suffixNumDigits = numDigits - 1;
-        long cumulativeDeciBs = 0L;
-        for(int startDigit = 1; startDigit <= 9; startDigit++) {
-            final int suffixDecimal = decimal - powOf2 * startDigit;
-            if (suffixDecimal < 0) {
-                break;
-            }
-            final Key suffixKey = new Key(suffixDecimal, suffixNumDigits);
-            final long suffixDeciBs = getFlooredDeciBsWithSameDecimal(suffixKey);
-            cumulativeDeciBs += suffixDeciBs;
-            if (indexSinceKeyStart <= cumulativeDeciBs) {
-                return startDigit;
-            }
-        }
-        throw new IllegalStateException("Unreachable code");
-    }
-
-    private long getFlooredDeciBsWithSameDecimal(final Key key) {
-        final int decimal = key.getDecimal();
-        if (decimal == 0) {
-            return 1;
-        }
-        final Map.Entry<Key, Long> floorEntry = keys2CumulativeIndex.floorEntry(key);
-        final Map.Entry<Key, Long> entryFlooredOnDecimal = keys2CumulativeIndex.floorEntry(new Key(decimal, 0));
-        assert floorEntry.getKey().getDecimal() == decimal;
-        return floorEntry.getValue() - entryFlooredOnDecimal.getValue();
-    }
-
     long getIndexSinceKeyStart(final long index) {
         final long lowerIndex = endingIndexToKeys.lowerEntry(index).getKey();
         return index - lowerIndex;
@@ -189,7 +152,6 @@ public class DecimalToDeciBinary {
             final long count = keyDeciBCountEntry.getValue();
             cumulativeIndex += count;
             endingIndexToKeys.put(cumulativeIndex, key);
-            keys2CumulativeIndex.put(key, cumulativeIndex);
         }
     }
 
