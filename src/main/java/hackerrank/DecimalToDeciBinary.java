@@ -166,11 +166,11 @@ public class DecimalToDeciBinary {
                 relPos += numDeciBinaries;
                 relPosToNumDigits.put(relPos, numDigits);
                 numDigitsToRelPos.put(numDigits, relPos);
-                decimalToNumDigitsToCount.computeIfAbsent(decimal, k -> new HashMap<>())
-                                         .put(numDigits, numDeciBinaries);
+                numDigitsToCount.put(numDigits, numDeciBinaries);
                 totalGenerated += numDeciBinaries;
             }
         }
+        decimalToNumDigitsToCount.put(decimal, numDigitsToCount);
         endingIndexToDecimal.put(totalGenerated, decimal);
 //        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
         decimalToNumDigitsToEndingRelPos.put(decimal, numDigitsToRelPos);
