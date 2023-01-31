@@ -136,11 +136,6 @@ public class DecimalToDeciBinary {
         return globalPos - endingPosForPrevDecimal;
     }
 
-    long getIndexSinceKeyStart(final long index) {
-        final long lowerIndex = endingIndexToKeys.lowerEntry(index).getKey();
-        return index - lowerIndex;
-    }
-
     private void populateCumulativeMaps() {
         long cumulativeIndex = 0L;
         for (final Map.Entry<Key, Long> keyDeciBCountEntry : keyToDeciBCount.entrySet()) {
