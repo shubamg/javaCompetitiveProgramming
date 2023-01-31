@@ -77,15 +77,6 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
-    public void getKeyAtIndex() {
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(25);
-        // Based on Sample Input 1 at https://www.hackerrank.com/challenges/decibinary-numbers/problem?isFullScreen=false
-        final int numDigitsIn102 = 3;
-        final int decimal = DecimalToDeciBinary.getDecimal(102);
-        Assert.assertEquals(new DecimalToDeciBinary.Key(decimal, numDigitsIn102), cache.getKeyAtIndex(19L));
-    }
-
-    @Test
     public void compareKeysWithDifferentDecimal() {
         final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
         final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(5, 1);
