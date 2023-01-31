@@ -19,6 +19,7 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
     private static final boolean DEBUG = false;
+    private static final int MAX_NUM_DECIMALS = 300_000;
 
     private final long deciBinariesNeeded;
     private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToCount;
@@ -29,10 +30,10 @@ public class DecimalToDeciBinary {
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        decimalToNumDigitsToCount = new HashMap<>();
+        decimalToNumDigitsToCount = new HashMap<>(MAX_NUM_DECIMALS);
         endingIndexToDecimal = new TreeMap<>();
-        decimalToEndingRelPosToNumDigits = new HashMap<>();
-        decimalToNumDigitsToEndingRelPos = new HashMap<>();
+        decimalToEndingRelPosToNumDigits = new HashMap<>(MAX_NUM_DECIMALS);
+        decimalToNumDigitsToEndingRelPos = new HashMap<>(MAX_NUM_DECIMALS);
         generateDeciBinaries();
     }
 
@@ -156,7 +157,8 @@ public class DecimalToDeciBinary {
     private void generateDeciBinariesFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
         final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
-        final NavigableMap<Integer, Long> numDigitsToRelPos = new TreeMap<>();
+        final Map<Integer, Long> numDigitsToRelPos = new HashMap<>();
+        final Map<Integer, Long> numDigitsToCount = new HashMap<>();
         long relPos = 0L;
         for (final int numDigits : allowedNumDigits) {
             final long numDeciBinaries = computeNumDeciBinaries(decimal, numDigits);
