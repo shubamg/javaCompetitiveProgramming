@@ -25,7 +25,7 @@ public class DecimalToDeciBinary {
     private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToCount;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
-    private final Map<Integer, NavigableMap<Integer, Long>> decimalToNumDigitsToEndingRelPos;
+    private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToEndingRelPos;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
@@ -73,13 +73,11 @@ public class DecimalToDeciBinary {
     }
 
     long getNumDeciBsWithMaxDigits(final int decimal, final int maxDigitsAllowed) {
-        final Map.Entry<Integer, Long> floorEntry =
-                decimalToNumDigitsToEndingRelPos.get(decimal).floorEntry(maxDigitsAllowed);
-        if (floorEntry == null) {
-            return 0L;
-        }
-        return floorEntry.getValue();
-
+        return decimalToNumDigitsToEndingRelPos.get(decimal).entrySet().stream()
+                                               .filter(e -> e.getKey() <= maxDigitsAllowed)
+                                               .mapToLong(Map.Entry::getValue)// cumulative counts
+                                               .max() // max since cumulative entries
+                                               .orElse(0L);
     }
 
     long getNumDeciBsWithMaxDigitsSlowly(final int decimal, final int maxDigitsAllowed) {
@@ -108,17 +106,12 @@ public class DecimalToDeciBinary {
 
     int getNumDigitsSlowly(final int decimal, final long relPos) {
         assert relPos > 0;
-        final NavigableMap<Integer, Long> numDigitsToEndingRelPos = decimalToNumDigitsToEndingRelPos.get(decimal);
-        final long size = numDigitsToEndingRelPos.lastEntry().getValue();
-        if (size < relPos) {
-            return -1; // return -1 if less than relPos decimals are there
-        }
-        //noinspection OptionalGetWithoutIsPresent, explicitly checked up
+        final Map<Integer, Long> numDigitsToEndingRelPos = decimalToNumDigitsToEndingRelPos.get(decimal);
         return numDigitsToEndingRelPos.entrySet().stream()
                                       .filter(e -> e.getValue() >= relPos) // filter on num digits
                                       .mapToInt(Map.Entry::getKey) // map to num Digits
-                                      .findFirst() // equivalent to min since this is sorted stream
-                                      .getAsInt();
+                                      .min().orElse(-1);// all deciBinaries < relPos
+
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {
