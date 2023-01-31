@@ -1,11 +1,11 @@
 package hackerrank;
 
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
@@ -21,7 +21,7 @@ public class DecimalToDeciBinary {
     private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
 
     private final long deciBinariesNeeded;
-    private final Map<Key, Long> keyToDeciBCount;
+    private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToCount;
     private final NavigableMap<Long, Integer> endingIndexToDecimal;
     private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
     private final Map<Integer, NavigableMap<Integer, Long>> decimalToNumDigitsToEndingRelPos;
@@ -29,7 +29,7 @@ public class DecimalToDeciBinary {
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
-        keyToDeciBCount = new HashMap<>();
+        decimalToNumDigitsToCount = new HashMap<>();
         endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new HashMap<>();
         decimalToNumDigitsToEndingRelPos = new HashMap<>();
@@ -37,7 +37,8 @@ public class DecimalToDeciBinary {
     }
 
     long getCountFor(final Key key) {
-        return keyToDeciBCount.getOrDefault(key, 0L);
+        return decimalToNumDigitsToCount.getOrDefault(key.getDecimal(), Collections.emptyMap())
+                                        .getOrDefault(key.getNumDigits(), 0L);
     }
 
     long getDeciBinary(final long globalPos) {
@@ -135,7 +136,7 @@ public class DecimalToDeciBinary {
     }
 
     private void initBaseCase() {
-        keyToDeciBCount.put(new Key(0, 0), 1L);
+        decimalToNumDigitsToCount.put(0, Collections.singletonMap(0, 1L));
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
         final TreeMap<Integer, Long> numDigitsToRelPosForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
@@ -167,7 +168,8 @@ public class DecimalToDeciBinary {
                 relPos += numDeciBinaries;
                 relPosToNumDigits.put(relPos, numDigits);
                 numDigitsToRelPos.put(numDigits, relPos);
-                keyToDeciBCount.put(key, numDeciBinaries);
+                decimalToNumDigitsToCount.computeIfAbsent(key.getDecimal(), k -> new HashMap<>())
+                                         .put(key.getNumDigits(), numDeciBinaries);
                 totalGenerated += numDeciBinaries;
             }
         }
@@ -185,7 +187,7 @@ public class DecimalToDeciBinary {
         for (int unitDigit = mod2; unitDigit <= Math.min(9, decimal); unitDigit += 2) {
             final int prefixDecimal = (decimal - unitDigit) / 2;
             final Key prefixKey = new Key(prefixDecimal, numDigitsInPrefix);
-            numDeciBinaries += keyToDeciBCount.getOrDefault(prefixKey, 0L);
+            numDeciBinaries += getCountFor(prefixKey);
         }
         return numDeciBinaries;
     }

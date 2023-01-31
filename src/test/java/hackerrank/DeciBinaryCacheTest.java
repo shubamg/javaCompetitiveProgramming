@@ -240,10 +240,6 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(5, cache.getDeciBinary(11));
     }
 
-    private static int firstDigit(final int x) {
-        return Integer.parseInt(Integer.toString(x).substring(0, 1));
-    }
-
     private static void compareDifferentKeys(final DecimalToDeciBinary.Key smallerKey, final DecimalToDeciBinary.Key largerKey) {
         Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
         Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
