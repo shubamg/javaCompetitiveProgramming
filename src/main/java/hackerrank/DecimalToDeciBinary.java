@@ -56,8 +56,8 @@ public class DecimalToDeciBinary {
         return getKeyAtIndex(globalPos).getDecimal();
     }
 
-    long getRelPos(final int decimal, final long globalPos) {
-        if (decimal == 0) {
+    long getPosRelativeToDecimalStart(final long globalPos) {
+        if (globalPos == 1) {
             return 1L;
         }
         final long endingPosForPrevDecimal = endingIndexToDecimal.lowerEntry(globalPos).getKey();

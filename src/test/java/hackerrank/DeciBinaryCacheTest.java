@@ -166,9 +166,9 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
-    public void getRelPos() {
+    public void getPosRelativeToDecimalStart() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
-        Assert.assertEquals(1L, cache.getRelPos(0, 1L));
+        Assert.assertEquals(1L, cache.getPosRelativeToDecimalStart(1L));
 
         /*
         globalPos = 15, relPos = 1: DeciBinary{decimal=6, repr=6},
@@ -179,11 +179,11 @@ public class DeciBinaryCacheTest {
         globalPos = 20, relPos = 6: DeciBinary{decimal=6, repr=110},
          */
 //        Assert.assertEquals(1L, cache.getRelPos(6, 15L));
-        Assert.assertEquals(2L, cache.getRelPos(6, 16L));
-        Assert.assertEquals(3L, cache.getRelPos(6, 17L));
-        Assert.assertEquals(4L, cache.getRelPos(6, 18L));
-        Assert.assertEquals(5L, cache.getRelPos(6, 19L));
-        Assert.assertEquals(6L, cache.getRelPos(6, 20L));
+        Assert.assertEquals(2L, cache.getPosRelativeToDecimalStart(16L));
+        Assert.assertEquals(3L, cache.getPosRelativeToDecimalStart(17L));
+        Assert.assertEquals(4L, cache.getPosRelativeToDecimalStart(18L));
+        Assert.assertEquals(5L, cache.getPosRelativeToDecimalStart(19L));
+        Assert.assertEquals(6L, cache.getPosRelativeToDecimalStart(20L));
     }
 
     private static int firstDigit(final int x) {
