@@ -156,6 +156,16 @@ public class DeciBinaryCacheTest {
 
     }
 
+    @Test
+    public void getDecimalFromGlobalPos() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(0), cache.getDecimalFromGlobalPos(1L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(1), cache.getDecimalFromGlobalPos(2L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(2), cache.getDecimalFromGlobalPos(3L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(10), cache.getDecimalFromGlobalPos(4L));
+        Assert.assertEquals(DecimalToDeciBinary.getDecimal(100), cache.getDecimalFromGlobalPos(10L));
+    }
+
     private static int firstDigit(final int x) {
         return Integer.parseInt(Integer.toString(x).substring(0, 1));
     }

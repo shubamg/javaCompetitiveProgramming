@@ -19,17 +19,17 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private final long deciBinariesNeeded;
-    private final SortedMap<Key, Long> keyToDeciBCount;
+    private final SortedMap<Key, Long> keyToDeciBCount; // may be removed
     private final NavigableMap<Long, Key> indexToKeys;
-    private final NavigableMap<Key, Long> keys2CumulativeIndex;
-    private final Map<Integer, NavigableMap<Long, Integer>> globalRelPos2NumDigits;
+    private final NavigableMap<Key, Long> keys2CumulativeIndex; // may be removed
+    private final Map<Integer, NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
         indexToKeys = new TreeMap<>();
-        globalRelPos2NumDigits = new HashMap<>();
+        decimalToEndingRelPosToNumDigits = new HashMap<>();
         keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
     }
@@ -40,6 +40,18 @@ public class DecimalToDeciBinary {
 
     Key getKeyAtIndex(final long index) {
         return indexToKeys.ceilingEntry(index).getValue();
+    }
+
+    long getDeciBinary(final int decimal, final long relPos, final int maxDigits) {
+        return -1L;
+    }
+
+    int getNumDigits(final int decimal, final long relPos) {
+        return -1;
+    }
+
+    int getDecimalFromGlobalPos(final long globalPos) {
+        return -1;
     }
 
     int getStartingDigit(final long index) {
@@ -97,7 +109,7 @@ public class DecimalToDeciBinary {
         keyToDeciBCount.put(new Key(0, 0), 1L);
         final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
-        globalRelPos2NumDigits.put(0, relPosToNumDigitsForZero);
+        decimalToEndingRelPosToNumDigits.put(0, relPosToNumDigitsForZero);
         totalGenerated++;
     }
 
@@ -127,7 +139,7 @@ public class DecimalToDeciBinary {
         }
         final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
         numDigitsToRelPos.forEach((numDigits, _relPos) -> relPosToNumDigits.put(_relPos, numDigits));
-        globalRelPos2NumDigits.put(decimal, relPosToNumDigits);
+        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
     }
 
     private long computeNumDeciBinaries(final Key key) {
@@ -187,14 +199,14 @@ public class DecimalToDeciBinary {
     int getRelativePos(final int decimal, final long relativeIndex) {
         assert relativeIndex > 0;
         final Map.Entry<Long, Integer> ceilingEntry =
-                globalRelPos2NumDigits.get(decimal).ceilingEntry(relativeIndex);
+                decimalToEndingRelPosToNumDigits.get(decimal).ceilingEntry(relativeIndex);
         if (ceilingEntry == null) {
             return -1; // default value
         }
         return ceilingEntry.getValue();
     }
 
-    static class Key implements Comparable<Key> {
+    static class Key implements Comparable<Key> { // might be removed
         private final int decimal;
         private final int numDigits;
 
