@@ -66,10 +66,6 @@ public class DecimalToDeciBinary {
         throw new IllegalStateException("Unreachable code");
     }
 
-    int getDeciBinary(final long index) {
-        return -1;
-    }
-
     private long getFlooredDeciBsWithSameDecimal(final Key key) {
         final int decimal = key.getDecimal();
         if (decimal == 0) {
