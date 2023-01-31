@@ -159,13 +159,16 @@ public class DeciBinaryCacheTest {
             12: DeciBinary{decimal=10, repr=1002},
             13: DeciBinary{decimal=10, repr=1010},
          */
-        final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(70);
         final int firstRelPosFor2DigitDeciB = 1;
         Assert.assertEquals(2, cache.getRelativePos(10, firstRelPosFor2DigitDeciB));
         final int middleRelPosFor2DigitDeciB = 2;
         Assert.assertEquals(2, cache.getRelativePos(10, middleRelPosFor2DigitDeciB));
         final int lastRelPosFor2DigitDeciB = 5;
         Assert.assertEquals(2, cache.getRelativePos(10, lastRelPosFor2DigitDeciB));
+        final int nonExistentRelPos = 14;
+        Assert.assertEquals(-1, cache.getRelativePos(10, nonExistentRelPos));
+
     }
 
     private static int firstDigit(final int x) {

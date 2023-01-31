@@ -2,6 +2,7 @@ package hackerrank;
 
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
@@ -21,12 +22,14 @@ public class DecimalToDeciBinary {
     private final SortedMap<Key, Long> keyToDeciBCount;
     private final NavigableMap<Long, Key> indexToKeys;
     private final NavigableMap<Key, Long> keys2CumulativeIndex;
+    private final Map<Integer, NavigableMap<Long, Integer>> globalRelPos2NumDigits;
     private long totalGenerated = 0;
 
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         keyToDeciBCount = new TreeMap<>();
         indexToKeys = new TreeMap<>();
+        globalRelPos2NumDigits = new HashMap<>();
         keys2CumulativeIndex = new TreeMap<>();
         generateDeciBinaries();
     }
@@ -96,6 +99,9 @@ public class DecimalToDeciBinary {
 
     private void initBaseCase() {
         keyToDeciBCount.put(new Key(0, 0), 1L);
+        final TreeMap<Long, Integer> relPosToNumDigitsForZero = new TreeMap<>();
+        relPosToNumDigitsForZero.put(1L, 0);
+        globalRelPos2NumDigits.put(0, relPosToNumDigitsForZero);
         totalGenerated++;
     }
 
@@ -111,17 +117,21 @@ public class DecimalToDeciBinary {
 
     private void processAllKeysFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
+        final Map<Integer, Long> numDigitsToRelPos = new HashMap<>();
+        long relPos = 0L;
         for (final int numDigits : allowedNumDigits) {
-            processKey(new Key(decimal, numDigits));
+            final Key key = new Key(decimal, numDigits);
+            final long numDeciBinaries = computeNumDeciBinaries(key);
+            if (numDeciBinaries != 0) {
+                relPos += numDeciBinaries;
+                numDigitsToRelPos.put(numDigits, relPos);
+                keyToDeciBCount.put(key, numDeciBinaries);
+                totalGenerated += numDeciBinaries;
+            }
         }
-    }
-
-    private void processKey(final Key key) {
-        final long numDeciBinaries = computeNumDeciBinaries(key);
-        if (numDeciBinaries != 0) {
-            keyToDeciBCount.put(key, numDeciBinaries);
-            totalGenerated += numDeciBinaries;
-        }
+        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
+        numDigitsToRelPos.forEach((numDigits, _relPos) -> relPosToNumDigits.put(_relPos, numDigits));
+        globalRelPos2NumDigits.put(decimal, relPosToNumDigits);
     }
 
     private long computeNumDeciBinaries(final Key key) {
@@ -179,7 +189,13 @@ public class DecimalToDeciBinary {
     }
 
     int getRelativePos(final int decimal, final long relativeIndex) {
-        return 0;
+        assert relativeIndex > 0;
+        final Map.Entry<Long, Integer> ceilingEntry =
+                globalRelPos2NumDigits.get(decimal).ceilingEntry(relativeIndex);
+        if (ceilingEntry == null) {
+            return -1; // default value
+        }
+        return ceilingEntry.getValue();
     }
 
     static class Key implements Comparable<Key> {
