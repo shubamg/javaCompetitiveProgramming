@@ -2,7 +2,6 @@ package hackerrank;
 
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -36,9 +35,8 @@ public class DecimalToDeciBinary {
         generateDeciBinaries();
     }
 
-    long getCountFor(final Key key) {
-        return decimalToNumDigitsToCount.getOrDefault(key.getDecimal(), Collections.emptyMap())
-                                        .getOrDefault(key.getNumDigits(), 0L);
+    long getCountFor(final int decimal, final int numDigits) {
+        return decimalToNumDigitsToCount.getOrDefault(decimal, Collections.emptyMap()).getOrDefault(numDigits, 0L);
     }
 
     long getDeciBinary(final long globalPos) {
@@ -151,25 +149,24 @@ public class DecimalToDeciBinary {
         initBaseCase();
         int currDeci = 1;
         while (totalGenerated < deciBinariesNeeded) {
-            processAllKeysFor(currDeci);
+            generateDeciBinariesFor(currDeci);
             currDeci++;
         }
     }
 
-    private void processAllKeysFor(final int decimal) {
+    private void generateDeciBinariesFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
         final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
         final NavigableMap<Integer, Long> numDigitsToRelPos = new TreeMap<>();
         long relPos = 0L;
         for (final int numDigits : allowedNumDigits) {
-            final Key key = new Key(decimal, numDigits);
-            final long numDeciBinaries = computeNumDeciBinaries(key);
+            final long numDeciBinaries = computeNumDeciBinaries(decimal, numDigits);
             if (numDeciBinaries != 0) {
                 relPos += numDeciBinaries;
                 relPosToNumDigits.put(relPos, numDigits);
                 numDigitsToRelPos.put(numDigits, relPos);
-                decimalToNumDigitsToCount.computeIfAbsent(key.getDecimal(), k -> new HashMap<>())
-                                         .put(key.getNumDigits(), numDeciBinaries);
+                decimalToNumDigitsToCount.computeIfAbsent(decimal, k -> new HashMap<>())
+                                         .put(numDigits, numDeciBinaries);
                 totalGenerated += numDeciBinaries;
             }
         }
@@ -178,16 +175,13 @@ public class DecimalToDeciBinary {
         decimalToNumDigitsToEndingRelPos.put(decimal, numDigitsToRelPos);
     }
 
-    private long computeNumDeciBinaries(final Key key) {
-        final int decimal = key.getDecimal();
-        final int numDigits = key.getNumDigits();
+    private long computeNumDeciBinaries(final int decimal, final int numDigits) {
         final int numDigitsInPrefix = numDigits - 1;
         long numDeciBinaries = 0;
         final int mod2 = decimal % 2;
         for (int unitDigit = mod2; unitDigit <= Math.min(9, decimal); unitDigit += 2) {
             final int prefixDecimal = (decimal - unitDigit) / 2;
-            final Key prefixKey = new Key(prefixDecimal, numDigitsInPrefix);
-            numDeciBinaries += getCountFor(prefixKey);
+            numDeciBinaries += getCountFor(prefixDecimal, numDigitsInPrefix);
         }
         return numDeciBinaries;
     }
@@ -241,58 +235,5 @@ public class DecimalToDeciBinary {
             remainingDeciBinary /= 10;
         }
         return decimal;
-    }
-
-    static class Key implements Comparable<Key> { // might be removed
-        private final int decimal;
-        private final int numDigits;
-
-        Key(final int decimal, final int numDigits) {
-            this.decimal = decimal;
-            this.numDigits = numDigits;
-        }
-
-        int getDecimal() {
-            return decimal;
-        }
-
-        int getNumDigits() {
-            return numDigits;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            final Key key = (Key) o;
-
-            if (decimal != key.decimal) {
-                return false;
-            }
-            return numDigits == key.numDigits;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = decimal;
-            result = 31 * result + numDigits;
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Key{" + "decimal=" + decimal + ", numDigits=" + numDigits + '}';
-        }
-
-        @Override
-        public int compareTo(final Key other) {
-            return Comparator.comparingInt(Key::getDecimal).thenComparingInt(Key::getNumDigits)
-                             .compare(this, other);
-        }
     }
 }

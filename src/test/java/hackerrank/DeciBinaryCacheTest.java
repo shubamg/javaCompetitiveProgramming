@@ -39,7 +39,7 @@ public class DeciBinaryCacheTest {
     public void countOfDeciBinaries() {
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(100);
         final List<Integer> twoDigitDeciBinariesFor8 = Lists.newArrayList(16, 24, 32, 40);
-        Assert.assertEquals(twoDigitDeciBinariesFor8.size(), cache.getCountFor(new DecimalToDeciBinary.Key(8, 2)));
+        Assert.assertEquals(twoDigitDeciBinariesFor8.size(), cache.getCountFor(8, 2));
     }
 
     @Test
@@ -74,27 +74,6 @@ public class DeciBinaryCacheTest {
     public void getDecimal() {
         final long deciBinary = 123;
         Assert.assertEquals(11, DecimalToDeciBinary.getDecimal(deciBinary));
-    }
-
-    @Test
-    public void compareKeysWithDifferentDecimal() {
-        final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
-        final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(5, 1);
-        compareDifferentKeys(smallerKey, largerKey);
-    }
-
-    @Test
-    public void compareKeysWithDifferentNumDigits() {
-        final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 1);
-        final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(4, 2);
-        compareDifferentKeys(smallerKey, largerKey);
-    }
-
-    @Test
-    public void compareDifferentKeys() {
-        final DecimalToDeciBinary.Key smallerKey = new DecimalToDeciBinary.Key(4, 2);
-        final DecimalToDeciBinary.Key largerKey = new DecimalToDeciBinary.Key(5, 1);
-        compareDifferentKeys(smallerKey, largerKey);
     }
 
     @Test
@@ -238,11 +217,6 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(31, cache.getDeciBinary(24));
         Assert.assertEquals(32, cache.getDeciBinary(30));
         Assert.assertEquals(5, cache.getDeciBinary(11));
-    }
-
-    private static void compareDifferentKeys(final DecimalToDeciBinary.Key smallerKey, final DecimalToDeciBinary.Key largerKey) {
-        Assert.assertTrue(smallerKey.compareTo(largerKey) < 0);
-        Assert.assertTrue(largerKey.compareTo(smallerKey) > 0);
     }
 
     private static int[] copyArray(
