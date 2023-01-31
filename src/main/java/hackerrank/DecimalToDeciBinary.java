@@ -111,6 +111,21 @@ public class DecimalToDeciBinary {
         return ceilingEntry.getValue();
     }
 
+    int getNumDigitsSlowly(final int decimal, final long relPos) {
+        assert relPos > 0;
+        final NavigableMap<Integer, Long> numDigitsToEndingRelPos = decimalToNumDigitsToEndingRelPos.get(decimal);
+        final long size = numDigitsToEndingRelPos.lastEntry().getValue();
+        if (size < relPos) {
+            return -1; // return -1 if less than relPos decimals are there
+        }
+        //noinspection OptionalGetWithoutIsPresent, explicitly checked up
+        return numDigitsToEndingRelPos.entrySet().stream()
+                                      .filter(e -> e.getValue() >= relPos) // filter on num digits
+                                      .mapToInt(Map.Entry::getKey) // map to num Digits
+                                      .findFirst() // equivalent to min since this is sorted stream
+                                      .getAsInt();
+    }
+
     int getDecimalFromGlobalPos(final long globalPos) {
         return getKeyAtIndex(globalPos).getDecimal();
     }
