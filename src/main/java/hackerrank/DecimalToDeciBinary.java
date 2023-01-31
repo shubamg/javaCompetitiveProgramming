@@ -42,10 +42,6 @@ public class DecimalToDeciBinary {
         return keyToDeciBCount.getOrDefault(key, 0L);
     }
 
-    Key getKeyAtIndex(final long index) {
-        return endingIndexToKeys.ceilingEntry(index).getValue();
-    }
-
     long getDeciBinary(final long globalPos) {
         final int decimal = getDecimalFromGlobalPos(globalPos);
         final long relPos = getPosRelativeToDecimalStart(globalPos);
@@ -129,7 +125,7 @@ public class DecimalToDeciBinary {
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {
-        return getKeyAtIndex(globalPos).getDecimal();
+        return endingIndexToKeys.ceilingEntry(globalPos).getValue().getDecimal();
     }
 
     long getPosRelativeToDecimalStart(final long globalPos) {
