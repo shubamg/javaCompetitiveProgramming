@@ -44,8 +44,14 @@ public class DecimalToDeciBinary {
         return endingIndexToKeys.ceilingEntry(index).getValue();
     }
 
-    long getDeciBinary(final int decimal, final long relPos, final int maxDigits) {
-        return -1L;
+    long getDeciBinary(final long globalPos) {
+        final int decimal = getDecimalFromGlobalPos(globalPos);
+        final long relPos = getPosRelativeToDecimalStart(globalPos);
+        return getDeciBinaryInternal(decimal, relPos, MAX_NUM_DIGITS);
+    }
+
+    private long getDeciBinaryInternal(final int decimal, final long relPos, final int maxDigits) {
+        return 0L;
     }
 
     int getNumDigits(final int decimal, final long relPos) {

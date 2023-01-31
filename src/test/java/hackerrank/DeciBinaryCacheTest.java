@@ -209,6 +209,12 @@ public class DeciBinaryCacheTest {
         Assert.assertEquals(-1, cache.getNumDigits(6, 7L));
     }
 
+    @Test
+    public void getDeciBinary() {
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(30);
+        Assert.assertEquals(0, cache.getDeciBinary(1));
+    }
+
     private static int firstDigit(final int x) {
         return Integer.parseInt(Integer.toString(x).substring(0, 1));
     }
