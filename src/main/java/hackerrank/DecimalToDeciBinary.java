@@ -17,6 +17,7 @@ import java.util.stream.IntStream;
 public class DecimalToDeciBinary {
 
     private static final int MAX_NUM_DIGITS = 20;
+    private static final int CAPACITY_OF_MAP_KEYED_ON_NUM_DIGITS = 2 * MAX_NUM_DIGITS;
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
@@ -25,7 +26,7 @@ public class DecimalToDeciBinary {
 
     private final long deciBinariesNeeded;
     private final List<Map<Integer, Long>> decimalToNumDigitsToCount;
-    private final NavigableMap<Long, Integer> endingIndexToDecimal;
+    private final List<Long> decimalToEndingIndex;
     private final List<NavigableMap<Long, Integer>> decimalToEndingRelPosToNumDigits; // might be removed
     private final List<Map<Integer, Long>> decimalToNumDigitsToEndingRelPos;
     private long totalGenerated = 0;
@@ -33,9 +34,9 @@ public class DecimalToDeciBinary {
     DecimalToDeciBinary(final long deciBinariesNeeded) {
         this.deciBinariesNeeded = deciBinariesNeeded;
         decimalToNumDigitsToCount = new ArrayList<>(MAX_NUM_DECIMALS);
-        endingIndexToDecimal = new TreeMap<>();
         decimalToEndingRelPosToNumDigits = new ArrayList<>(MAX_NUM_DECIMALS);
         decimalToNumDigitsToEndingRelPos = new ArrayList<>(MAX_NUM_DECIMALS);
+        decimalToEndingIndex = new ArrayList<>(MAX_NUM_DECIMALS);
         generateDeciBinaries();
     }
 
@@ -120,14 +121,19 @@ public class DecimalToDeciBinary {
     }
 
     int getDecimalFromGlobalPos(final long globalPos) {
-        return endingIndexToDecimal.ceilingEntry(globalPos).getValue();
+        final int binSearchResult = Collections.binarySearch(decimalToEndingIndex, globalPos);
+        if (binSearchResult < 0) {
+            return -binSearchResult - 1;
+        }
+        return binSearchResult;
     }
 
     long getPosRelativeToDecimalStart(final long globalPos) {
         if (globalPos == 1) {
             return 1L;
         }
-        final long endingPosForPrevDecimal = endingIndexToDecimal.lowerEntry(globalPos).getKey();
+        final int previousDecimal = getDecimalFromGlobalPos(globalPos) - 1;
+        final long endingPosForPrevDecimal = decimalToEndingIndex.get(previousDecimal);
         return globalPos - endingPosForPrevDecimal;
     }
 
@@ -137,7 +143,7 @@ public class DecimalToDeciBinary {
         final TreeMap<Integer, Long> numDigitsToRelPosForZero = new TreeMap<>();
         relPosToNumDigitsForZero.put(1L, 0);
         numDigitsToRelPosForZero.put(0, 1L);
-        endingIndexToDecimal.put(1L, 0);
+        decimalToEndingIndex.add(1L);
         decimalToEndingRelPosToNumDigits.add(relPosToNumDigitsForZero);
         decimalToNumDigitsToEndingRelPos.add(numDigitsToRelPosForZero);
         totalGenerated++;
@@ -155,8 +161,8 @@ public class DecimalToDeciBinary {
     private void generateDeciBinariesFor(final int decimal) {
         final int[] allowedNumDigits = getAllowedNumDigits(decimal);
 //        final NavigableMap<Long, Integer> relPosToNumDigits = new TreeMap<>();
-        final Map<Integer, Long> numDigitsToRelPos = new HashMap<>();
-        final Map<Integer, Long> numDigitsToCount = new HashMap<>();
+        final Map<Integer, Long> numDigitsToRelPos = new HashMap<>(CAPACITY_OF_MAP_KEYED_ON_NUM_DIGITS);
+        final Map<Integer, Long> numDigitsToCount = new HashMap<>(CAPACITY_OF_MAP_KEYED_ON_NUM_DIGITS);
         long relPos = 0L;
         for (final int numDigits : allowedNumDigits) {
             final long numDeciBinaries = computeNumDeciBinaries(decimal, numDigits);
@@ -169,7 +175,7 @@ public class DecimalToDeciBinary {
             }
         }
         decimalToNumDigitsToCount.add(numDigitsToCount);
-        endingIndexToDecimal.put(totalGenerated, decimal);
+        decimalToEndingIndex.add(totalGenerated);
 //        decimalToEndingRelPosToNumDigits.put(decimal, relPosToNumDigits);
         decimalToNumDigitsToEndingRelPos.add(numDigitsToRelPos);
     }
