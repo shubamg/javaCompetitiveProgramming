@@ -3,10 +3,14 @@ package hackerrank;
 
 import com.google.common.collect.Lists;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Shubham Gupta
@@ -86,11 +90,23 @@ public class DeciBinaryCacheTest {
     }
 
     @Test
-    public void measurePerformance() {
+    public void measureTime() {
         final long startTime = System.nanoTime();
         final DecimalToDeciBinary cache = new DecimalToDeciBinary(10_000_000_000_000_000L);
         System.out.printf("Took %d nanos %n", System.nanoTime() - startTime);
         Assert.assertEquals(32, cache.getDeciBinary(30));
+    }
+
+    @Ignore
+    @Test
+    public void takeHeapDump() throws InterruptedException {
+        final long startTime = System.nanoTime();
+        final DecimalToDeciBinary cache = new DecimalToDeciBinary(10_000_000_000_000_000L);
+        System.out.printf("Took %d nanos %n", System.nanoTime() - startTime);
+        System.out.println("Sleeping for 1 minute. You can take heapdump now using jmap -dump:format=b,"
+                + "file=<fileName>.hprof " + getPid());
+                Thread.sleep(TimeUnit.SECONDS.toMillis(60));
+        System.out.println("closing");
     }
 
     @Test
@@ -237,5 +253,19 @@ public class DeciBinaryCacheTest {
             final long[] numDigitsToMaxDecimal, @SuppressWarnings("SameParameterValue") final int start,
             final int rangeLength) {
         return Arrays.copyOfRange(numDigitsToMaxDecimal, start, start + rangeLength);
+    }
+
+    private static long getPid() {
+        final RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+
+        // Get name representing the running Java virtual machine.
+        // It returns something like 35656@Krakatau. The value before
+        // the @ symbol is the PID.
+        final String jvmName = bean.getName();
+        System.out.println("Name = " + jvmName);
+
+        // Extract the PID by splitting the string returned by the
+        // bean.getName() method.
+        return Long.parseLong(jvmName.split("@")[0]);
     }
 }

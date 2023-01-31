@@ -18,6 +18,7 @@ public class DecimalToDeciBinary {
     private static final int[] NUM_DIGITS_TO_MIN_DECIMAL = createNumDigitsToMinDecimal();
     private static final int[] NUM_DIGITS_TO_MAX_DECIMAL = createNumDigitsToMaxDecimal();
     private static final long[] POS_TO_DECIMAL_PLACE_VALUE = posToDecimalPlaceValue();
+    private static final boolean DEBUG = false;
 
     private final long deciBinariesNeeded;
     private final Map<Integer, Map<Integer, Long>> decimalToNumDigitsToCount;
@@ -42,16 +43,17 @@ public class DecimalToDeciBinary {
     long getDeciBinary(final long globalPos) {
         final int decimal = getDecimalFromGlobalPos(globalPos);
         final long relPos = getPosRelativeToDecimalStart(globalPos);
-        final int numDigits = getNumDigits(decimal, relPos);
-        return getDeciBinaryInternal(decimal, relPos, numDigits);
+        return getDeciBinaryInternal(decimal, relPos);
     }
 
-    private long getDeciBinaryInternal(final int decimal, final long relPos, final int numDigits) {
-        System.out.printf("Begin call getDeciBinaryInternal(decimal=%d, relPos=%d, numDigits=%d%n", decimal,
-                relPos, numDigits);
+    private long getDeciBinaryInternal(final int decimal, final long relPos) {
+        if (DEBUG) {
+            System.out.printf("Begin call getDeciBinaryInternal(decimal=%d, relPos=%d%n", decimal, relPos);
+        }
         if (decimal == 0) {
             return 0L;
         }
+        final int numDigits = getNumDigits(decimal, relPos);
         final long numDeciBsWithLessDigits = getNumDeciBsWithMaxDigits(decimal, numDigits - 1);
         long suffixRelPos = relPos - numDeciBsWithLessDigits;
         final int maxDigitsForSuffix = numDigits - 1;
@@ -62,10 +64,8 @@ public class DecimalToDeciBinary {
             if (numDeciBsWithSuffix < suffixRelPos) {
                 suffixRelPos -= numDeciBsWithSuffix; // try a different first digit
             } else {
-                final int suffixNumDigits = getNumDigits(suffixDecimal, suffixRelPos);
                 final long decimalPLaceValOfFirstDigit = firstDigit * POS_TO_DECIMAL_PLACE_VALUE[numDigits];
-                return decimalPLaceValOfFirstDigit + getDeciBinaryInternal(
-                        suffixDecimal, suffixRelPos, suffixNumDigits);
+                return decimalPLaceValOfFirstDigit + getDeciBinaryInternal(suffixDecimal, suffixRelPos);
             }
         }
         throw new IllegalStateException("Unreachable code");
