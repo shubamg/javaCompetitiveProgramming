@@ -301,16 +301,6 @@ public class DecimalToDeciBinary {
         return decimal;
     }
 
-    int getRelativePos(final int decimal, final long relativeIndex) {
-        assert relativeIndex > 0;
-        final Map.Entry<Long, Integer> ceilingEntry =
-                decimalToEndingRelPosToNumDigits.get(decimal).ceilingEntry(relativeIndex);
-        if (ceilingEntry == null) {
-            return -1; // default value
-        }
-        return ceilingEntry.getValue();
-    }
-
     static class Key implements Comparable<Key> { // might be removed
         private final int decimal;
         private final int numDigits;
